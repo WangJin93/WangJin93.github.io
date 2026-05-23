@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TFTF - Transcription Factor Target Finder Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            display: flex;
+            gap: 40px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        
+        .sidebar h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #e74c3c;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+        }
+        
+        .sidebar ul li {
+            margin-bottom: 8px;
+        }
+        
+        .sidebar ul li a {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 6px 10px;
+            display: block;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .sidebar ul li a:hover {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .sidebar .toggle-btn {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar .toggle-btn::after {
+            content: '▶';
+            font-size: 0.7rem;
+            transition: transform 0.2s;
+        }
+        
+        .sidebar .toggle-btn.expanded::after {
+            transform: rotate(90deg);
+        }
+        
+        .sidebar .submenu {
+            margin-left: 15px;
+            display: none;
+            border-left: 2px solid #eee;
+            padding-left: 10px;
+            margin-top: 5px;
+        }
+        
+        .sidebar .submenu.show {
+            display: block;
+        }
+        
+        .sidebar .submenu li a {
+            font-size: 0.85rem;
+            padding: 4px 8px;
+        }
+        
+        .content {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .hero-meta {
+            margin-top: 20px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .hero-meta span {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .hero-meta a {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px;
+            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e74c3c;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
+            color: #555;
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+            margin: 20px 0 10px;
+            color: #e74c3c;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        code {
+            background: #f5f7fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #e74c3c;
+            color: white;
+            font-weight: 500;
+        }
+        
+        tr:hover {
+            background: #f5f7fa;
+        }
+        
+        .links a {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        .module-box {
+            background: #fff5f5;
+            border-left: 4px solid #e74c3c;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin-left: 20px;
+        }
+        
+        .feature-list li {
+            margin: 10px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .feature-list li::before {
+            content: "•";
+            color: #e74c3c;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="index.html">← Back to Home</a>
+            <span>TFTF Documentation</span>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Table of Contents</h3>
+            <ul>
+                <li><a href="#introduction">1. Introduction</a></li>
+                <li><a href="#online-tools">2. Related Online Tools</a></li>
+                <li><a href="#data-source">3. Data Source</a></li>
+                <li><a href="#algorithm">4. Algorithm</a></li>
+                <li><a href="#installation">5. Installation</a></li>
+                <li>
+                    <a href="#functions" class="toggle-btn">6. Functions</a>
+                    <ul class="submenu" id="function-submenu">
+                        <li><a href="#func-predict_target">6.1 predict_target</a></li>
+                        <li><a href="#func-predict_TF">6.2 predict_TF</a></li>
+                        <li><a href="#func-intersections">6.3 intersections</a></li>
+                        <li><a href="#func-plot_venn">6.4 plot_venn</a></li>
+                        <li><a href="#func-pantissue_cor_analysis">6.5 pantissue_cor_analysis</a></li>
+                        <li><a href="#func-viz_cor_results">6.6 viz_cor_results</a></li>
+                    </ul>
+                </li>
+                <li><a href="#shiny-app">7. Shiny App</a></li>
+            </ul>
+        </aside>
+        
+        <main class="content">
+            <div class="hero">
+                <h1>Transcription Factor Target Finder (TFTF)</h1>
+                <p>An R package for predicting transcription factor target genes and upstream transcription factors of target genes by bridging multiple predictive models and TF-target interaction databases.</p>
+                <div class="hero-meta">
+                    <span>📦 R Package</span>
+                    <span>👤 Author: Jin Wang</span>
+                    <span>📧 <a href="mailto:jin.wang93@outlook.com">jin.wang93@outlook.com</a></span>
+                    <span>🌐 <a href="https://www.jingege.wang">Website</a></span>
+                </div>
+            </div>
+            
+            <section id="introduction">
+                <h2>1. Introduction</h2>
+                <p>
+                    Transcription Factor Target Finder (TFTF) is an R package designed for predicting transcription factor target genes 
+                    and predicting upstream transcription factors of target genes. There are currently many online tools for predicting 
+                    transcription factor target genes, such as hTFTarget, KnockTF, CHEA, TRRUST, GTRD, and ChIP Atlas, which are based 
+                    on Chip-seq high-throughput data, transcriptional profiling data from knockdown/knockout experiments, or motif sequences.
+                </p>
+                <p>
+                    Our aim is to fully utilize the prediction results from these online tools and combine them with correlation analysis 
+                    to maximize the reliability of the predicted transcription factor-target gene regulatory relationships.
+                </p>
+                <h3>Key Features</h3>
+                <ul class="feature-list">
+                    <li><strong>Multiple Database Integration:</strong> Combines predictions from 9 different TF-target databases</li>
+                    <li><strong>Motif-Based Prediction:</strong> Uses FIMO and PWMEnrich for motif analysis</li>
+                    <li><strong>Correlation Analysis:</strong> Leverages TCGA, GTEx, and CCLE for expression correlation</li>
+                    <li><strong>Interactive Shiny App:</strong> User-friendly web interface for all analysis functions</li>
+                    <li><strong>1575 Transcription Factors:</strong> Comprehensive coverage of human TFs (present in ≥2 datasets)</li>
+                </ul>
+                <p class="links">
+                    <strong>GitHub:</strong> <a href="https://github.com/WangJin93/TFTF">https://github.com/WangJin93/TFTF</a><br>
+                    <strong>Shiny App:</strong> <a href="https://jingle.shinyapps.io/TF_Target_Finder/">https://jingle.shinyapps.io/TF_Target_Finder/</a><br>
+                    <strong>Documentation:</strong> <a href="https://www.jingege.wang/tf-target-finder-an-r-web-application-and-package-bridging-multiple-predictive-models-for-decoding-transcription-fac-tor-target-interactions/">https://www.jingege.wang</a>
+                </p>
+            </section>
+            
+            <section id="online-tools">
+                <h2>2. Related Online Tools and Database Information</h2>
+                <p>TFTF integrates data from the following authoritative transcription factor databases and tools:</p>
+                
+                <table>
+                    <tr>
+                        <th>Dataset</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td><a href="https://guolab.wchscu.cn/hTFtarget/">hTFtarget</a></td>
+                        <td>This database aggregates data from various transcription factor regulation studies, including experimental evidence and prediction results of transcription factor-target gene relationships.</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://bio.liclab.net/KnockTF/index.php">KnockTF</a></td>
+                        <td>KnockTF is based on data from transcription factor knockout experiments, providing information on the regulation of gene expression by transcription factors.</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.encodeproject.org/">ENCODE</a></td>
+                        <td>The ENCODE project provides extensive genomic functional annotation data, including transcription factor binding sites, chromatin accessibility regions, and gene regulatory elements.</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://maayanlab.cloud/chea3/">CHEA</a></td>
+                        <td>The CHEA database offers transcription factor-target gene relationships based on shared promoter sequences, supporting enrichment analysis and construction of transcriptional regulatory networks.</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.grnpedia.org/trrust/">TRRUST</a></td>
+                        <td>TRRUST curates a large amount of transcription factor-target gene interaction data from literature, providing reliable information on transcription factor regulation relationships.</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://gtrd.biouml.org/">GTRD</a></td>
+                        <td>GTRD collects transcription factor binding site data from ChIP-seq experiments, providing information on transcription factor binding in the genome.</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://chip-atlas.org/">ChIP_Atlas</a></td>
+                        <td>ChIP-Atlas integrates a large amount of publicly available ChIP-seq data, providing information on transcription factor binding sites and regulation in different cells and tissues.</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://jaspar.genereg.net">JASPAR</a></td>
+                        <td>JASPAR is an authoritative transcription factor binding site database, providing binding sequence data for various species, used for predicting transcription factor DNA binding preferences and regulatory effects.</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://portal.gdc.cancer.gov/">TCGA</a></td>
+                        <td>The Cancer Genome Atlas (TCGA) is a global collaborative project aimed at advancing cancer research and diagnosis by analyzing genomic, epigenomic, and clinical data from various cancer samples.</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gtexportal.org/">GTEx</a></td>
+                        <td>The Genotype-Tissue Expression (GTEx) project is a comprehensive research initiative aimed at exploring patterns and variations in gene expression across various human tissues.</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://sites.broadinstitute.org/ccle/">CCLE</a></td>
+                        <td>The Cancer Cell Line Encyclopedia (CCLE) is a rich resource database providing molecular characterization data from various cancer cell lines.</td>
+                    </tr>
+                </table>
+            </section>
+            
+            <section id="data-source">
+                <h2>3. Data Source</h2>
+                <p>TFTF retrieves data from the following sources for transcription factor target prediction and correlation analysis:</p>
+                
+                <table>
+                    <tr>
+                        <th>Dataset</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>hTFtarget</td>
+                        <td><a href="https://guolab.wchscu.cn/hTFtarget/api/chipseq/targets/tf">API Endpoint</a></td>
+                    </tr>
+                    <tr>
+                        <td>KnockTF</td>
+                        <td><a href="https://bio.liclab.net/KnockTFv2/public/download_anno/knocktf_v2_main_human.txt">Download Link</a></td>
+                    </tr>
+                    <tr>
+                        <td>ENCODE</td>
+                        <td><a href="https://maayanlab.cloud/static/hdfs/harmonizome/data/encodetfppi/gene_attribute_edges.txt.gz">Download Link</a></td>
+                    </tr>
+                    <tr>
+                        <td>CHEA</td>
+                        <td><a href="https://maayanlab.cloud/static/hdfs/harmonizome/data/cheappi/gene_attribute_edges.txt.gz">Download Link</a></td>
+                    </tr>
+                    <tr>
+                        <td>TRRUST</td>
+                        <td><a href="https://www.grnpedia.org/trrust/data/trrust_rawdata.human.tsv">Download Link</a></td>
+                    </tr>
+                    <tr>
+                        <td>GTRD</td>
+                        <td><a href="https://gtrd20-06.biouml.org/bioumlweb/">Web Interface</a></td>
+                    </tr>
+                    <tr>
+                        <td>ChIP_Atlas</td>
+                        <td><a href="https://chip-atlas.dbcls.jp/data/hg38/target/(TF)name).tsv">Download Pattern</a></td>
+                    </tr>
+                    <tr>
+                        <td>JASPAR motif</td>
+                        <td><a href="https://jaspar.elixir.no/downloads/#pfm_vertebrates">Download Link</a></td>
+                    </tr>
+                    <tr>
+                        <td>TCGA</td>
+                        <td><a href="https://toil-xena-hub.s3.us-east-1.amazonaws.com/download/tcga_rsem_isoform_tpm.gz">Download Link</a></td>
+                    </tr>
+                    <tr>
+                        <td>GTEx</td>
+                        <td><a href="https://toil-xena-hub.s3.us-east-1.amazonaws.com/download/gtex_rsem_isoform_tpm.gz">Download Link</a></td>
+                    </tr>
+                    <tr>
+                        <td>CCLE</td>
+                        <td><a href="https://data.broadinstitute.org/ccle/CCLE_DepMap_18Q2_RNAseq_RPKM_20180502.gct">Download Link</a></td>
+                    </tr>
+                </table>
+            </section>
+            
+            <section id="algorithm">
+                <h2>4. Algorithm for Predicting Transcription Factor Target Genes Based on Motif</h2>
+                
+                <h3>4.1 FIMO</h3>
+                <p>
+                    <strong>FIMO</strong> (Find Individual Motif Occurrences) is a tool used to identify individual motif occurrences 
+                    within DNA sequences, enabling the recognition of transcription factor binding sites and other functional DNA elements.
+                </p>
+                
+                <h3>4.2 PWMEnrich</h3>
+                <p>
+                    <a href="https://bioconductor.org/packages/release/bioc/html/PWMEnrich.html"><strong>PWMEnrich</strong></a> 
+                    (Position Weight Matrix Enrichment Analysis) is an R package for analyzing the enrichment of features such as 
+                    promoter regions and transcription factor binding sites in genomic sequence data, utilizing a Position Weight Matrix 
+                    (PWM) model for the identification and quantification of transcription factor binding sites.
+                </p>
+            </section>
+            
+            <section id="installation">
+                <h2>5. Installation</h2>
+                <p>Install TFTF from GitHub:</p>
+                <pre><code>devtools::install_github("WangJin93/TFTF")</code></pre>
+                
+                <h3>5.1 Built-in Data</h3>
+                <p>View the list of transcription factors included in this R package:</p>
+                <pre><code>tf_list</code></pre>
+                <p><strong>Note:</strong> We only include transcription factors that are present in at least 2 datasets out of nine, resulting in a total of <strong>1575 transcription factors</strong>.</p>
+                
+                <h3>5.2 Tissue Types</h3>
+                <p>View correlation analysis organization types:</p>
+                <pre><code>tissue</code></pre>
+            </section>
+            
+            <section id="functions">
+                <h2>6. Function Reference</h2>
+                
+                <div class="module-box" id="func-predict_target">
+                    <h3>6.1 predict_target</h3>
+                    <h4>Description</h4>
+                    <p>Predict the target genes of Transcription Factor in multiple TF-target prediction databases and correlation analysis.</p>
+                    <h4>Usage</h4>
+                    <pre><code>predict_target(
+  datasets = c("hTFtarget", "KnockTF", "FIMO_JASPAR", "PWMEnrich_JASPAR", "ENCODE",
+              "CHEA", "TRRUST", "GTRD", "ChIP_Atlas"),
+  tf = "STAT3",
+  TCGA_tissue = "COAD",
+  GTEx_tissue = "Colon",
+  cor_DB = c("TCGA", "GTEx"),
+  cor_cutoff = 0.3,
+  FIMO.score = 10,
+  PWMEnrich.p = 0.1,
+  cut.log2FC = 1,
+  down.only = T,
+  app = F
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>datasets</td><td>TF-target prediction databases to use (9 available)</td></tr>
+                        <tr><td>tf</td><td>Transcription factor name</td></tr>
+                        <tr><td>TCGA_tissue</td><td>TCGA tissue type for correlation analysis</td></tr>
+                        <tr><td>GTEx_tissue</td><td>GTEx tissue type for correlation analysis</td></tr>
+                        <tr><td>cor_DB</td><td>Correlation databases: TCGA, GTEx, or CCLE</td></tr>
+                        <tr><td>cor_cutoff</td><td>Correlation coefficient threshold (default: 0.3)</td></tr>
+                        <tr><td>FIMO.score</td><td>FIMO score threshold (default: 10)</td></tr>
+                        <tr><td>PWMEnrich.p</td><td>PWMEnrich p-value threshold (default: 0.1)</td></tr>
+                        <tr><td>cut.log2FC</td><td>Log2 fold change threshold for KnockTF (default: 1)</td></tr>
+                        <tr><td>down.only</td><td>Only include downregulated genes from KnockTF</td></tr>
+                    </table>
+                </div>
+                
+                <div class="module-box" id="func-predict_TF">
+                    <h3>6.2 predict_TF</h3>
+                    <h4>Description</h4>
+                    <p>Predict the upstream Transcription Factors regulating user inputted gene in multiple TF-target prediction databases and correlation analysis.</p>
+                    <h4>Usage</h4>
+                    <pre><code>predict_TF(
+  datasets = c("hTFtarget", "KnockTF", "FIMO_JASPAR", "PWMEnrich_JASPAR", "ENCODE",
+              "CHEA", "TRRUST", "GTRD", "ChIP_Atlas"),
+  target = "GAPDH",
+  TCGA_tissue = "COAD",
+  GTEx_tissue = "Colon",
+  cor_DB = c("TCGA", "GTEx"),
+  cor_cutoff = 0.3,
+  FIMO.score = 10,
+  PWMEnrich.p = 0.1,
+  cut.log2FC = 1,
+  down.only = T,
+  app = F
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>target</td><td>Target gene symbol</td></tr>
+                        <tr><td>Other arguments</td><td>Same as predict_target()</td></tr>
+                    </table>
+                </div>
+                
+                <div class="module-box" id="func-intersections">
+                    <h3>6.3 intersections</h3>
+                    <h4>Description</h4>
+                    <p>Intersection analysis of prediction results from multiple databases.</p>
+                    <h4>Usage</h4>
+                    <pre><code>Results <- predict_target(datasets = c("hTFtarget", "KnockTF", "FIMO_JASPAR", 
+                                         "PWMEnrich_JASPAR"),
+                        cor_DB = c("TCGA", "GTEx"),
+                        tf = "STAT3")
+results_inter <- intersections(results)</code></pre>
+                </div>
+                
+                <div class="module-box" id="func-plot_venn">
+                    <h3>6.4 plot_venn</h3>
+                    <h4>Description</h4>
+                    <p>Visualization of intersection analysis results using Venn or petal diagrams.</p>
+                    <h4>Usage</h4>
+                    <pre><code>plot_venn(results_inter)</code></pre>
+                </div>
+                
+                <div class="module-box" id="func-pantissue_cor_analysis">
+                    <h3>6.5 pantissue_cor_analysis</h3>
+                    <h4>Description</h4>
+                    <p>Correlation analysis between TF and target gene in pan-tissue in "TCGA", "GTEx" or "CCLE" databases.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cor_results <- pantissue_cor_analysis(
+  Gene1 = "FOXM1",
+  Gene2 = "GAPDH",
+  data_source = "TCGA",
+  type = c("normal", "tumor"),
+  cor_method = "pearson"
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>Gene1</td><td>First gene symbol (e.g., TF)</td></tr>
+                        <tr><td>Gene2</td><td>Second gene symbol (e.g., target gene)</td></tr>
+                        <tr><td>data_source</td><td>Database: "TCGA", "GTEx", or "CCLE"</td></tr>
+                        <tr><td>type</td><td>Sample type: "normal", "tumor", or both</td></tr>
+                        <tr><td>cor_method</td><td>Correlation method: "pearson" or "spearman"</td></tr>
+                    </table>
+                </div>
+                
+                <div class="module-box" id="func-viz_cor_results">
+                    <h3>6.6 viz_cor_results</h3>
+                    <h4>Description</h4>
+                    <p>Visualization of pan-tissue correlation analysis using ggplot2.</p>
+                    <h4>Usage</h4>
+                    <pre><code>viz_cor_results(cor_results, values = c("black", "red"))</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>cor_results</td><td>Results from pantissue_cor_analysis()</td></tr>
+                        <tr><td>values</td><td>Color palette for correlation visualization</td></tr>
+                    </table>
+                </div>
+            </section>
+            
+            <section id="shiny-app">
+                <h2>7. Shiny App Introduction</h2>
+                <p>The R package has a built-in Shiny app that can implement all the functions of the R package. Required packages: shiny, DT, graph, ggraph, shinyWidgets, bs4Dash, tidygraph.</p>
+                
+                <h3>7.1 Launch the App</h3>
+                <pre><code>TFTF_app()</code></pre>
+                <p>Or access the app online: <a href="https://jingle.shinyapps.io/TF_Target_Finder/">https://jingle.shinyapps.io/TF_Target_Finder/</a></p>
+                
+                <h3>7.2 Module 1: Prediction of Target Genes of TF</h3>
+                <p>This systematic approach enables a thorough analysis of TF-target gene interactions. The procedural steps are:</p>
+                <ul class="feature-list">
+                    <li><strong>Input a TF name:</strong> Select a TF of interest from a dropdown list</li>
+                    <li><strong>Select TF-Target datasets:</strong> Choose the TF-Target datasets to include in the analysis</li>
+                    <li><strong>Select correlation datasets:</strong> Optionally enhance accuracy based on correlation analysis</li>
+                    <li><strong>Results:</strong> View prediction outcomes on the "All results" tab</li>
+                    <li><strong>Intersection selection:</strong> Select well-predicted datasets for intersection analysis</li>
+                    <li><strong>Visualize intersections:</strong> View Venn or petal diagrams</li>
+                </ul>
+                
+                <h3>7.3 Module 2: Prediction of Upstream TFs of Target Genes</h3>
+                <p>Similar to Module 1, but predicts upstream TFs for a given target gene:</p>
+                <ul class="feature-list">
+                    <li><strong>Input a target gene symbol:</strong> Such as GAPDH</li>
+                    <li><strong>Select datasets:</strong> Choose predictive tools to include in the analysis</li>
+                    <li><strong>Correlation datasets:</strong> Optionally enhance accuracy with correlation analysis</li>
+                    <li><strong>Results:</strong> View and download detailed information for each tool's predictions</li>
+                </ul>
+                
+                <h3>7.4 Module 3: Pan-tissue Correlation Analysis</h3>
+                <p>Analyze expression correlation of TF-target pairs across various tissue types:</p>
+                <ul class="feature-list">
+                    <li><strong>TF and target gene input:</strong> Select a transcription factor and enter the target gene</li>
+                    <li><strong>Database selection:</strong> Choose from TCGA, GTEx, and CCLE</li>
+                    <li><strong>Correlation parameters:</strong> Set analysis method and thresholds</li>
+                    <li><strong>Results:</strong> View correlation results and scatter plots</li>
+                    <li><strong>Detailed plots:</strong> Click on results to view detailed scatter plots</li>
+                </ul>
+                
+                <h3>7.5 Module 4: TF-targets Regulation Network Analysis</h3>
+                <p>Predict target genes based on user-uploaded differential expression results and visualize regulatory networks:</p>
+                <ul class="feature-list">
+                    <li><strong>Data upload:</strong> Upload gene differential expression analysis results</li>
+                    <li><strong>Database selection:</strong> Choose TF-target prediction databases</li>
+                    <li><strong>Network visualization:</strong> Visualize the regulatory network</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+    
+    <script>
+        // Toggle Function Reference submenu
+        document.querySelector('.toggle-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.toggle('expanded');
+            document.getElementById('function-submenu').classList.toggle('show');
+        });
+    </script>
+</body>
+</html>
