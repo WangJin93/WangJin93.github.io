@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCAS - GEO Cancer Analysis Suite Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            display: flex;
+            gap: 40px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        
+        .sidebar h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+        }
+        
+        .sidebar ul li {
+            margin-bottom: 8px;
+        }
+        
+        .sidebar ul li a {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 6px 10px;
+            display: block;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .sidebar ul li a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .sidebar .toggle-btn {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar .toggle-btn::after {
+            content: '▶';
+            font-size: 0.7rem;
+            transition: transform 0.2s;
+        }
+        
+        .sidebar .toggle-btn.expanded::after {
+            transform: rotate(90deg);
+        }
+        
+        .sidebar .submenu {
+            margin-left: 15px;
+            display: none;
+            border-left: 2px solid #eee;
+            padding-left: 10px;
+            margin-top: 5px;
+        }
+        
+        .sidebar .submenu.show {
+            display: block;
+        }
+        
+        .sidebar .submenu li a {
+            font-size: 0.85rem;
+            padding: 4px 8px;
+        }
+        
+        .content {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .hero-meta {
+            margin-top: 20px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .hero-meta span {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px;
+            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
+            color: #555;
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+            margin: 20px 0 10px;
+            color: #667eea;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        code {
+            background: #f5f7fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .function-box {
+            background: #f9fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .function-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 500;
+        }
+        
+        tr:hover {
+            background: #f5f7fa;
+        }
+        
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="index.html">← Back to Home</a>
+            <span>GCAS Documentation v1.0.0</span>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Table of Contents</h3>
+            <ul>
+                <li><a href="#introduction">1. Introduction</a></li>
+                <li><a href="#installation">2. Installation</a></li>
+                <li>
+                    <a href="#function-reference" class="toggle-btn">3. Function Reference</a>
+                    <ul class="submenu" id="function-submenu">
+                        <li><a href="#func-datasets_summary">3.1 datasets_summary</a></li>
+                        <li><a href="#func-get_expr_data">3.2 get_expr_data</a></li>
+                        <li><a href="#func-viz_TvsN">3.3 viz_TvsN</a></li>
+                        <li><a href="#func-data_summary">3.4 data_summary</a></li>
+                        <li><a href="#func-plot_meta_forest">3.5 plot_meta_forest</a></li>
+                        <li><a href="#func-plot_logFC_heatmap">3.6 plot_logFC_heatmap</a></li>
+                        <li><a href="#func-plot_logFC_scatter">3.7 plot_logFC_scatter</a></li>
+                        <li><a href="#func-cor_cancer_genelist">3.8 cor_cancer_genelist</a></li>
+                        <li><a href="#func-cor_gcas_drug">3.9 cor_gcas_drug</a></li>
+                        <li><a href="#func-cor_gcas_genelist">3.10 cor_gcas_genelist</a></li>
+                        <li><a href="#func-cor_gcas_TIL">3.11 cor_gcas_TIL</a></li>
+                        <li><a href="#func-viz_cor_heatmap">3.12 viz_cor_heatmap</a></li>
+                        <li><a href="#func-viz_cor_volcano">3.13 viz_cor_volcano</a></li>
+                        <li><a href="#func-viz_corplot">3.14 viz_corplot</a></li>
+                        <li><a href="#func-get_OSF_data">3.15 get_OSF_data</a></li>
+                        <li><a href="#func-DEGs_analysis">3.16 DEGs_analysis</a></li>
+                        <li><a href="#func-plot_volcano">3.17 plot_volcano</a></li>
+                        <li><a href="#func-coexpression_analysis">3.18 coexpression_analysis</a></li>
+                        <li><a href="#func-GSEA_analysis">3.19 GSEA_analysis</a></li>
+                        <li><a href="#func-get_DEGs_list">3.20 get_DEGs_list</a></li>
+                        <li><a href="#func-plot_venn">3.21 plot_venn</a></li>
+                        <li><a href="#func-RRA_analysis">3.22 RRA_analysis</a></li>
+                        <li><a href="#func-combat_datasets">3.23 combat_datasets</a></li>
+                        <li><a href="#func-merge_clinic_data">3.24 merge_clinic_data</a></li>
+                        <li><a href="#func-extract_subset">3.25 extract_subset</a></li>
+                    </ul>
+                </li>
+                <li><a href="#datasets">4. Datasets</a></li>
+                <li><a href="#demonstration">5. Project Demonstration</a></li>
+            </ul>
+        </aside>
+        
+        <main class="content">
+            <div class="hero">
+                <h1>The GEO Cancer Analysis Suite (GCAS)</h1>
+                <p>A versatile R package designed for analyzing and visualizing gene expression data in cancer research.</p>
+                <div class="hero-meta">
+                    <span>📦 Version: 1.0.0</span>
+                    <span>👤 Author: Jin Wang</span>
+                    <span>📧 Maintainer: jin.wang93@outlook.com</span>
+                    <span>📄 License: MIT</span>
+                </div>
+            </div>
+            
+            <section id="introduction">
+                <h2>1. Introduction</h2>
+                <p>
+                    The GEO Cancer Analysis Suite (GCAS) is a versatile R package designed for analyzing and visualizing gene expression data in cancer research. 
+                    GCAS allows for the comparison of gene expression between normal and tumor samples, correlation analysis, immune infiltration analysis, 
+                    differential expression analysis, co-expression analysis, and enrichment analysis.
+                </p>
+                <p>
+                    It includes a Shiny app for interactive visualization and can also be used directly within the R environment for advanced scripting. 
+                    GCAS is ideal for researchers, clinicians, and bioinformaticians seeking to explore cancer genomics data efficiently and effectively.
+                </p>
+                <h3>Dependencies</h3>
+                <p><strong>Depends:</strong> R (≥ 3.5.0)</p>
+                <p><strong>Imports:</strong> RobustRankAggreg, VennDiagram, digest, dplyr, ggpubr, ggrepel, httr, jsonlite, meta, psych, shiny, stringr, sva, tibble, RColorBrewer, clusterProfiler, ggplot2, grid</p>
+                <p class="links">
+                    <strong>URL:</strong> <a href="https://github.com/WangJin93/GCAS">https://github.com/WangJin93/GCAS</a><br>
+                    <strong>Bug Reports:</strong> <a href="https://github.com/WangJin93/GCAS/issues">https://github.com/WangJin93/GCAS/issues</a>
+                </p>
+            </section>
+            
+            <section id="installation">
+                <h2>2. Installation</h2>
+                <p>You can install GCAS from GitHub using the remotes package:</p>
+                <pre><code>remotes::install_github("WangJin93/GCAS")</code></pre>
+            </section>
+            
+            <section id="function-reference">
+                <h2>3. Function Reference</h2>
+                
+                <div class="function-box" id="func-datasets_summary">
+                    <div class="function-name">3.1 datasets_summary</div>
+                    <h4>Description</h4>
+                    <p>This function summarizes the sample counts and pairing status for datasets based on a specified tumor subtype.</p>
+                    <h4>Usage</h4>
+                    <pre><code>datasets_summary(tumor_subtype = "NSCLC")</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>tumor_subtype</td><td>A character string specifying the tumor subtype to filter the datasets. Default is "NSCLC".</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A data frame summarizing the number of Normal, Tumor, and Premalignant samples, as well as the pairing status for each dataset.</p>
+                    <h4>Example</h4>
+                    <pre><code>dt_sum <- datasets_summary("NSCLC")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-get_expr_data">
+                    <div class="function-name">3.2 get_expr_data</div>
+                    <h4>Description</h4>
+                    <p>Retrieve expression data for specified genes from given datasets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>get_expr_data(datasets, genes)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>datasets</td><td>A character vector of dataset identifiers.</td></tr>
+                        <tr><td>genes</td><td>A character vector of gene identifiers.</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A dataframe containing expression data for the specified genes from the given datasets.</p>
+                    <h4>Examples</h4>
+                    <pre><code>results <- get_expr_data(datasets = "GSE74706", genes = c("GAPDH","TNS1"))
+results <- get_expr_data(datasets = c("GSE62113","GSE74706"), genes = "GAPDH")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-viz_TvsN">
+                    <div class="function-name">3.3 viz_TvsN</div>
+                    <h4>Description</h4>
+                    <p>Visualizing the different expression of mRNA expression data between Tumor and Normal tissues in GEO database.</p>
+                    <h4>Usage</h4>
+                    <pre><code>viz_TvsN(
+  df,
+  df_type = c("single", "multi_gene", "multi_set"),
+  tumor_subtype = NULL,
+  Show.P.Value = TRUE,
+  Show.P.label = TRUE,
+  Method = "t.test",
+  Values = c("#00AFBB", "#FC4E07"),
+  Show.n = TRUE,
+  Show.n.location = "default"
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>Gene expression data obtained from get_expr_data().</td></tr>
+                        <tr><td>df_type</td><td>The type of gene expression data, one value of "single","multi_gene", and "multi_set".</td></tr>
+                        <tr><td>Show.P.Value</td><td>Whether to display the results of differential analysis, default TRUE.</td></tr>
+                        <tr><td>Show.P.label</td><td>Whether to display significance markers for differential analysis, default TRUE.</td></tr>
+                        <tr><td>Method</td><td>Methods of differential analysis, "t.test" or "limma", default "t.test".</td></tr>
+                        <tr><td>Values</td><td>Color palette for normal and tumor groups. Default c("#00AFBB", "#FC4E07").</td></tr>
+                        <tr><td>Show.n</td><td>Display sample size.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>df_single <- get_expr_data(datasets = "GSE27262",genes = c("TP53"))
+viz_TvsN(df_single,df_type = "single")
+viz_TvsN(df_single,df_type = "single",tumor_subtype ="LC")
+df_multi_set <- get_expr_data(datasets = c("GSE27262","GSE7670","GSE19188","GSE19804","GSE30219","GSE31210","GSE32665","GSE32863","GSE43458","GSE46539","GSE75037","GSE10072","GSE74706","GSE18842","GSE62113"), genes = "GAPDH")
+viz_TvsN(df_multi_set,df_type = "multi_set")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-data_summary">
+                    <div class="function-name">3.4 data_summary</div>
+                    <h4>Description</h4>
+                    <p>Compute summary statistics (mean, standard deviation, etc.) and perform hypothesis testing (t-test or Wilcoxon test) for gene expression data across different datasets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>data_summary(df, tumor_subtype = NULL, method = "t.test")</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>A dataframe containing gene expression data, with columns: 'dataset', 'subtype', and the gene expression Values.</td></tr>
+                        <tr><td>tumor_subtype</td><td>A character string specifying the tumor subtype to be analyzed. Default is NULL, which means all tumor subtypes will be included.</td></tr>
+                        <tr><td>method</td><td>A character string specifying the method for hypothesis testing. Options are "t.test" for t-test and "wilcox" for Wilcoxon test. Default is "t.test".</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A dataframe with summary statistics and p-values for each dataset.</p>
+                    <h4>Examples</h4>
+                    <pre><code>df <- get_expr_data(datasets = c("GSE27262","GSE7670","GSE19188","GSE19804","GSE30219","GSE31210","GSE32665","GSE32863","GSE43458","GSE46539","GSE75037","GSE10072","GSE74706","GSE18842","GSE62113"), genes = "GAPDH")
+results <- data_summary(df, tumor_subtype = "LUAD")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-plot_meta_forest">
+                    <div class="function-name">3.5 plot_meta_forest</div>
+                    <h4>Description</h4>
+                    <p>This function performs a meta-analysis on multiple datasets and generates a forest plot. It also tests for publication bias.</p>
+                    <h4>Usage</h4>
+                    <pre><code>plot_meta_forest(results, method = "wilcox", k.min = 10)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>results</td><td>Data frame. The results data frame containing columns for dataset, n.Tumor, mean.Tumor, sd.Tumor, n.Normal, mean.Normal, and sd.Normal.</td></tr>
+                        <tr><td>method</td><td>Character. The statistical method to use (default is "wilcox").</td></tr>
+                        <tr><td>k.min</td><td>Integer. Minimum number of studies for bias test (default is 7).</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A forest plot object.</p>
+                    <h4>Examples</h4>
+                    <pre><code>df <- get_expr_data(datasets = c("GSE27262","GSE7670","GSE19188","GSE19804","GSE30219","GSE31210","GSE32665","GSE32863","GSE43458","GSE46539","GSE75037","GSE10072","GSE74706","GSE18842","GSE62113"), genes = "GAPDH")
+results <- data_summary(df, tumor_subtype = "LUAD")
+plot_meta_forest(results)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-plot_logFC_heatmap">
+                    <div class="function-name">3.6 plot_logFC_heatmap</div>
+                    <h4>Description</h4>
+                    <p>This function generates a heatmap of log fold changes (logFC) for a gene across different datasets. It includes significance annotations based on p-values.</p>
+                    <h4>Usage</h4>
+                    <pre><code>plot_logFC_heatmap(results, direction = "horizontal")</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>results</td><td>Data frame. The results data frame containing columns for dataset, gene, logFC, and p.Value.</td></tr>
+                        <tr><td>direction</td><td>Ploting direction, horizontal or vertical.</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A ggplot object representing the heatmap.</p>
+                    <h4>Examples</h4>
+                    <pre><code>df <- get_expr_data(datasets = c("GSE27262","GSE7670","GSE19188","GSE19804","GSE30219","GSE31210","GSE32665","GSE32863","GSE43458","GSE46539","GSE75037","GSE10072","GSE74706","GSE18842","GSE62113"), genes = "GAPDH")
+results <- data_summary(df, tumor_subtype = "LUAD")
+heatmap <- plot_logFC_heatmap(results)
+print(heatmap)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-plot_logFC_scatter">
+                    <div class="function-name">3.7 plot_logFC_scatter</div>
+                    <h4>Description</h4>
+                    <p>This function generates a scatter plot of log fold changes (logFC) for a gene across different datasets. It includes significance annotations based on p-values.</p>
+                    <h4>Usage</h4>
+                    <pre><code>plot_logFC_scatter(
+  results,
+  p.cut = 0.05,
+  logFC.cut = 1,
+  colors = c("blue", "grey20", "red")
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>results</td><td>Data frame. The results data frame containing columns for dataset, gene, logFC, and p.Value.</td></tr>
+                        <tr><td>p.cut</td><td>Numeric. The cutoff for adjusted p-value to determine significance. Default is 0.05.</td></tr>
+                        <tr><td>logFC.cut</td><td>Numeric. The cutoff for log fold change to determine significance. Default is 1.</td></tr>
+                        <tr><td>colors</td><td>A vector of color panel, default c("blue", "grey20", "red").</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A ggplot object representing the scatter.</p>
+                    <h4>Examples</h4>
+                    <pre><code>df <- get_expr_data(datasets = c("GSE27262","GSE7670","GSE19188","GSE19804","GSE30219","GSE31210","GSE32665","GSE32863","GSE43458","GSE46539","GSE75037","GSE10072","GSE74706","GSE18842","GSE62113"), genes = "GAPDH")
+results <- data_summary(df, tumor_subtype = "LUAD")
+scatter <- plot_logFC_scatter(results, logFC.cut = 0.5, colors = c("blue","grey20", "red"))
+print(scatter)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-cor_cancer_genelist">
+                    <div class="function-name">3.8 cor_cancer_genelist</div>
+                    <h4>Description</h4>
+                    <p>Perform correlation analysis of the mRNA/protein expression data in CPTAC database.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cor_cancer_genelist(
+  dataset = "GSE62113",
+  id1 = "STAT3",
+  id2 = c("TNS1", "TP53"),
+  tumor_subtype = NULL,
+  sample_type = c("Tumor", "Normal"),
+  cor_method = "pearson"
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>dataset</td><td>Dataset name. Use 'dataset$Abbre' to get all datasets.</td></tr>
+                        <tr><td>id1</td><td>Gene symbol, you can input one gene symbol.</td></tr>
+                        <tr><td>id2</td><td>Gene symbols, you can input one or multiple symbols.</td></tr>
+                        <tr><td>tumor_subtype</td><td>Tumor subtype used for correlation analysis, default is NULL.</td></tr>
+                        <tr><td>sample_type</td><td>Sample type used for correlation analysis, default all types: c("Tumor", "Normal").</td></tr>
+                        <tr><td>cor_method</td><td>Method for correlation analysis, default "pearson".</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A list containing the correlation results and the merged data.</p>
+                    <h4>Examples</h4>
+                    <pre><code>results <- cor_cancer_genelist(dataset = "GSE62113",
+                             id1 = "STAT3",tumor_subtype = "LC",
+                             id2 = c("TNS1", "TP53"),
+                             sample_type = c("Tumor", "Normal"),
+                             cor_method = "pearson")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-cor_gcas_drug">
+                    <div class="function-name">3.9 cor_gcas_drug</div>
+                    <h4>Description</h4>
+                    <p>Calculate the correlation between target gene expression and anti-tumor drug sensitivity in multiple datasets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cor_gcas_drug(df, cor_method = "pearson", Target.pathway = c("Cell cycle"))</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>The expression data of the target gene in multiple datasets, obtained by the get_expr_data() function.</td></tr>
+                        <tr><td>cor_method</td><td>Method for correlation analysis, default "pearson".</td></tr>
+                        <tr><td>Target.pathway</td><td>The signaling pathways of anti-tumor drug targets, default "Cell cycle". Use "drug_info" to get the detailed information of these drugs.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>dataset <- c("GSE27262","GSE7670","GSE19188","GSE19804","GSE30219","GSE31210",
+           "GSE32665","GSE32863","GSE43458","GSE46539","GSE75037","GSE10072",
+           "GSE74706","GSE18842","GSE62113")
+df <- get_expr_data(genes = "TNS1", datasets = dataset)
+result <- cor_gcas_drug(df, Target.pathway = c("Cell cycle"))</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-cor_gcas_genelist">
+                    <div class="function-name">3.10 cor_gcas_genelist</div>
+                    <h4>Description</h4>
+                    <p>Perform correlation analysis of the expression data in multiple datasets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cor_gcas_genelist(
+  df,
+  geneset_data,
+  tumor_subtype = NULL,
+  sample_type = c("Tumor", "Normal"),
+  cor_method = "pearson"
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>The expression data of the target gene in multiple datasets, obtained by the get_expr_data() function.</td></tr>
+                        <tr><td>geneset_data</td><td>The expression data of a genelist in multiple datasets, obtained by the get_expr_data() function.</td></tr>
+                        <tr><td>tumor_subtype</td><td>Tumor subtype used for correlation analysis, default is NULL.</td></tr>
+                        <tr><td>sample_type</td><td>Sample type used for correlation analysis, default all types: c("Tumor", "Normal").</td></tr>
+                        <tr><td>cor_method</td><td>Method for correlation analysis, default "pearson".</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>genelist <- c("SIRPA","CTLA4","TIGIT","LAG3","VSIR","LILRB2","SIGLEC7","HAVCR2","LILRB4","PDCD1","BTLA")
+dataset <- c("GSE27262","GSE7670","GSE19188","GSE19804","GSE30219","GSE31210",
+           "GSE32665","GSE32863","GSE43458","GSE46539","GSE75037","GSE10072",
+           "GSE74706","GSE18842","GSE62113")
+df <- get_expr_data(genes = "TNS1",datasets = dataset)
+geneset_data <- get_expr_data(genes = genelist ,datasets = dataset)
+result <- cor_gcas_genelist(df, geneset_data, sample_type = c("Tumor"))</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-cor_gcas_TIL">
+                    <div class="function-name">3.11 cor_gcas_TIL</div>
+                    <h4>Description</h4>
+                    <p>Calculate the correlation between target gene expression and immune cells infiltration in multiple datasets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cor_gcas_TIL(df, cor_method = "spearman", TIL_type = "TIMER")</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>The expression data of the target gene in multiple datasets, obtained by the get_expr_data() function.</td></tr>
+                        <tr><td>cor_method</td><td>Method for correlation analysis, default "spearman".</td></tr>
+                        <tr><td>TIL_type</td><td>Algorithm for calculating immune cell infiltration, default "TIMER".</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>dataset <- c("GSE27262", "GSE7670", "GSE19188", "GSE19804", "GSE30219",
+           "GSE31210", "GSE32665", "GSE32863", "GSE43458", "GSE46539",
+           "GSE75037", "GSE10072", "GSE74706", "GSE18842", "GSE62113")
+df <- get_expr_data(genes = "TNS1", datasets = dataset)
+result <- cor_gcas_TIL(df, cor_method = "spearman", TIL_type = "TIMER")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-viz_cor_heatmap">
+                    <div class="function-name">3.12 viz_cor_heatmap</div>
+                    <h4>Description</h4>
+                    <p>Presenting correlation analysis results using heat maps based on ggplot2.</p>
+                    <h4>Usage</h4>
+                    <pre><code>viz_cor_heatmap(r, p)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>r</td><td>The correlation coefficient matrix r of the correlation analysis results obtained from the functions cor_cancer_genelist(), cor_gcas_TIL(), and cor_gcas_drug().</td></tr>
+                        <tr><td>p</td><td>The p-value matrix p of the correlation analysis results obtained from the functions cor_cancer_genelist(), cor_gcas_TIL(), and cor_gcas_drug().</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>genelist <- c("SIRPA","CTLA4","TIGIT","LAG3","VSIR","LILRB2","SIGLEC7","HAVCR2","LILRB4","PDCD1","BTLA")
+dataset <- c("GSE27262","GSE7670","GSE19188","GSE19804","GSE30219","GSE31210","GSE32665","GSE32863","GSE43458","GSE46539","GSE75037","GSE10072","GSE74706","GSE18842","GSE62113")
+df <- get_expr_data(genes = "TNS1", datasets = dataset)
+geneset_data <- get_expr_data(genes = genelist ,datasets = dataset)
+result <- cor_gcas_genelist(df, geneset_data, sample_type = c("Tumor"))
+viz_cor_heatmap(result$r, result$p)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-viz_cor_volcano">
+                    <div class="function-name">3.13 viz_cor_volcano</div>
+                    <h4>Description</h4>
+                    <p>Plotting volcano plot for the correlation analysis of a specific gene from the result of cor_gcas_genelist().</p>
+                    <h4>Usage</h4>
+                    <pre><code>viz_cor_volcano(
+  cor_result,
+  item,
+  p.cut = 0.05,
+  r.cut = 0.3,
+  colors = c("blue", "grey20", "red")
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>cor_result</td><td>DataFrame. The results from cor_gcas_genelist analysis.</td></tr>
+                        <tr><td>item</td><td>Character. Gene symbol or drug name or immune cell.</td></tr>
+                        <tr><td>p.cut</td><td>Numeric. The cutoff for adjusted p-value to determine significance. Default is 0.05.</td></tr>
+                        <tr><td>r.cut</td><td>Numeric. The cutoff for log fold change to determine significance. Default is 0.3.</td></tr>
+                        <tr><td>colors</td><td>A vector of color panel, default c("blue", "grey20", "red").</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A ggplot2 object representing the volcano plot.</p>
+                    <h4>Examples</h4>
+                    <pre><code>genelist <- c("SIRPA","CTLA4","TIGIT","LAG3","VSIR","LILRB2","SIGLEC7","HAVCR2","LILRB4","PDCD1","BTLA")
+dataset <- c("GSE27262","GSE7670","GSE19188","GSE19804","GSE30219","GSE31210","GSE32665","GSE32863","GSE43458","GSE46539","GSE75037","GSE10072","GSE74706","GSE18842","GSE62113")
+df <- get_expr_data(genes = "TNS1",datasets = dataset)
+geneset_data <- get_expr_data(genes = genelist ,datasets = dataset)
+cor_result <- cor_gcas_genelist(df, geneset_data, sample_type = c("Tumor"))
+viz_cor_volcano(cor_result, "LILRB4", p.cut = 0.5, r.cut = 0.1,colors = c("blue","grey20", "red"))</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-viz_corplot">
+                    <div class="function-name">3.14 viz_corplot</div>
+                    <h4>Description</h4>
+                    <p>Scatter plot with sample size (n), correlation coefficient (r) and p-value.</p>
+                    <h4>Usage</h4>
+                    <pre><code>viz_corplot(
+  data,
+  a,
+  b,
+  method = "pearson",
+  x.lab = " relative expression",
+  y.lab = " relative expression"
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>data</td><td>A gene expression dataset with at least two genes included, rows represent samples, and columns represent gene expression in the matrix.</td></tr>
+                        <tr><td>a</td><td>Gene A</td></tr>
+                        <tr><td>b</td><td>Gene B</td></tr>
+                        <tr><td>method</td><td>Method for correlation analysis, "pearson" or "spearman".</td></tr>
+                        <tr><td>x.lab</td><td>X-axis label.</td></tr>
+                        <tr><td>y.lab</td><td>Y-axis label.</td></tr>
+                    </table>
+                </div>
+                
+                <div class="function-box" id="func-get_OSF_data">
+                    <div class="function-name">3.15 get_OSF_data</div>
+                    <h4>Description</h4>
+                    <p>Retrieve GEO expression datasets and sample information from the OSF repository.</p>
+                    <h4>Usage</h4>
+                    <pre><code>get_OSF_data(table = "GSE19188", action = "geo_data")</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>table</td><td>A character string specifying the GEO dataset identifier (e.g., "GSE19188").</td></tr>
+                        <tr><td>action</td><td>A character string specifying the action, either "geo_data" to retrieve the expression data or "sample_info" to retrieve the sample information.</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A data frame containing the requested data.</p>
+                    <h4>Examples</h4>
+                    <pre><code>df <- get_OSF_data(table = "GSE74706", action = "sample_info")
+df2 <- get_OSF_data(table = "GSE74706", action = "geo_data")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-DEGs_analysis">
+                    <div class="function-name">3.16 DEGs_analysis</div>
+                    <h4>Description</h4>
+                    <p>Perform differential expression gene analysis on a given dataset.</p>
+                    <h4>Usage</h4>
+                    <pre><code>DEGs_analysis(df, tumor_subtype = NULL, ...)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>A dataframe containing gene expression data with sample IDs as columns.</td></tr>
+                        <tr><td>tumor_subtype</td><td>A character vector specifying the tumor subtypes to be analyzed. Default is NULL, which means all tumor subtypes will be included.</td></tr>
+                        <tr><td>...</td><td>Additional Arguments passed to 'lmFit', 'contrasts.fit', and 'eBayes'.</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A dataframe with DEG analysis results, including log fold changes and p-values.</p>
+                    <h4>Examples</h4>
+                    <pre><code>df <- get_OSF_data(table = "GSE19188", action = "geo_data")
+results <- DEGs_analysis(df, tumor_subtype = c("NSCLC"))</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-plot_volcano">
+                    <div class="function-name">3.17 plot_volcano</div>
+                    <h4>Description</h4>
+                    <p>Plotting volcano plot for DEGs between tumor and normal samples.</p>
+                    <h4>Usage</h4>
+                    <pre><code>plot_volcano(
+  results,
+  p.cut = 0.05,
+  logFC.cut = 1,
+  show.top = FALSE,
+  show.labels = NULL,
+  colors = c("blue", "grey20", "red")
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>results</td><td>DataFrame. The results from DEGs analysis containing columns 'adj.P.Value', 'P.Value', 'logFC', and 'gene'.</td></tr>
+                        <tr><td>p.cut</td><td>Numeric. The cutoff for adjusted p-value to determine significance. Default is 0.05.</td></tr>
+                        <tr><td>logFC.cut</td><td>Numeric. The cutoff for log fold change to determine significance. Default is 1.</td></tr>
+                        <tr><td>show.top</td><td>Logical. If TRUE, labels the top 5 up- and downregulated genes. Default is FALSE.</td></tr>
+                        <tr><td>show.labels</td><td>Character vector. Specific gene labels to show. Default is NULL.</td></tr>
+                        <tr><td>colors</td><td>A vector of color panel, default c("blue", "grey20", "red").</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A ggplot2 object representing the volcano plot.</p>
+                    <h4>Examples</h4>
+                    <pre><code>df <- get_OSF_data(table = "GSE74706", action = "geo_data")
+results <- DEGs_analysis(df)
+plot_volcano(results)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-coexpression_analysis">
+                    <div class="function-name">3.18 coexpression_analysis</div>
+                    <h4>Description</h4>
+                    <p>This function calculates the correlation between a given gene and all other genes in the provided expression matrix.</p>
+                    <h4>Usage</h4>
+                    <pre><code>coexpression_analysis(expression_matrix, gene, method = "pearson")</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>expression_matrix</td><td>A numeric matrix where rows represent genes and columns represent samples.</td></tr>
+                        <tr><td>gene</td><td>A character string representing the gene for which the correlations will be calculated.</td></tr>
+                        <tr><td>method</td><td>A character string specifying the correlation method to be used. Default is "pearson".</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A data frame containing gene names, correlation coefficients, and p-values.</p>
+                    <h4>Examples</h4>
+                    <pre><code>expression_matrix <- get_OSF_data(table = "GSE74706", action = "geo_data")
+results <- coexpression_analysis(expression_matrix, "RPN1")
+print(results)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-GSEA_analysis">
+                    <div class="function-name">3.19 GSEA_analysis</div>
+                    <h4>Description</h4>
+                    <p>This function performs Gene Set Enrichment Analysis (GSEA) based on either correlation results or limma differential analysis results.</p>
+                    <h4>Usage</h4>
+                    <pre><code>GSEA_analysis(data, gmt_file, pValue.cutoff = 0.05, data_type = "correlation")</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>data</td><td>A data frame containing gene names and corresponding Values. For correlation results, the columns should be named 'gene' and 'r'. For limma results, the columns should be named 'gene' and 'logFC'.</td></tr>
+                        <tr><td>gmt_file</td><td>Path to the GMT file containing gene sets, or directly pass GO/KEGG/Reactome datasets.</td></tr>
+                        <tr><td>pValue.cutoff</td><td>Numeric, the p-value threshold for significance. Default is 0.05.</td></tr>
+                        <tr><td>data_type</td><td>Character, type of the input data. Either "correlation" for correlation analysis results or "limma" for limma differential analysis results.</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A GSEA analysis result object.</p>
+                    <h4>Examples</h4>
+                    <pre><code>df <- get_OSF_data(table = "GSE74706", action = "geo_data")
+results <- DEGs_analysis(df,tumor_subtype =c("NSCLC"))
+gsea_result <- GSEA_analysis(results,  gmt_file = BP_GMT_7.5.1, data_type = "limma")
+
+results <- coexpression_analysis(df,"RPN1")
+gsea_result <- GSEA_analysis(results,  gmt_file = BP_GMT_7.5.1)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-get_DEGs_list">
+                    <div class="function-name">3.20 get_DEGs_list</div>
+                    <h4>Description</h4>
+                    <p>Extract significantly upregulated and downregulated genes from multiple DEG analysis results.</p>
+                    <h4>Usage</h4>
+                    <pre><code>get_DEGs_list(DEGs_lists, logFC.cut = 1, p.cut = 0.05)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>DEGs_lists</td><td>A list of dataframes containing DEG analysis results.</td></tr>
+                        <tr><td>logFC.cut</td><td>A numeric Value specifying the log fold change cutoff for significant DEGs. Default is 1.</td></tr>
+                        <tr><td>p.cut</td><td>A numeric Value specifying the p-value cutoff for significant DEGs. Default is 0.05.</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A list containing two lists: one for upregulated genes and one for downregulated genes across the provided datasets.</p>
+                    <h4>Examples</h4>
+                    <pre><code>df1 <- get_OSF_data(table = "GSE31210", action = "geo_data")
+results1 <- DEGs_analysis(df1)
+df2 <- get_OSF_data(table = "GSE19188", action = "geo_data")
+results2 <- DEGs_analysis(df2)
+DEGs_lists <- list("GSE31210" = results1, "GSE19188" = results2)
+results <- get_DEGs_list(DEGs_lists)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-plot_venn">
+                    <div class="function-name">3.21 plot_venn</div>
+                    <h4>Description</h4>
+                    <p>This function plots a Venn diagram for lists of differentially expressed genes (DEGs) across multiple datasets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>plot_venn(results, fill_colors = NULL, palette = "Set1", lty = 2, ...)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>results</td><td>List of character vectors. Each vector contains DEGs for a specific dataset.</td></tr>
+                        <tr><td>fill_colors</td><td>Character vector. Colors to fill the Venn diagram circles. Default is NULL, which uses a palette.</td></tr>
+                        <tr><td>palette</td><td>Character. Name of the RColorBrewer palette to use if fill_colors is not specified. Default is "Set1".</td></tr>
+                        <tr><td>lty</td><td>Numeric. Line type for the circles in the Venn diagram. Default is 2 (dashed line).</td></tr>
+                        <tr><td>...</td><td>Additional Arguments passed to venn.diagram function.</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A list of intersected DEGs.</p>
+                    <h4>Examples</h4>
+                    <pre><code>df1 <- get_OSF_data(table = "GSE31210", action = "geo_data")
+results1 <- DEGs_analysis(df1)
+df2 <- get_OSF_data(table = "GSE19188", action = "geo_data")
+results2 <- DEGs_analysis(df2)
+DEGs_lists <- list("GSE31210" = results1, "GSE19188" = results2)
+results <- get_DEGs_list(DEGs_lists)
+plot_venn(results$DEG.up, palette = "Set1")
+plot_venn(results$DEG.up, fill_colors = c("red", "green", "blue"), alpha = 0.5, cex = 1.5)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-RRA_analysis">
+                    <div class="function-name">3.22 RRA_analysis</div>
+                    <h4>Description</h4>
+                    <p>This function performs RRA analysis on differentially expressed genes (DEGs) lists obtained from various studies. It ranks genes based on their differential expression and aggregates the ranks to identify consistently regulated genes across studies.</p>
+                    <h4>Usage</h4>
+                    <pre><code>RRA_analysis(
+  DEGs_lists,
+  top.num = 0,
+  rra.p = 0.05,
+  logFC.cut = 1,
+  p.cut = 0.05
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>DEGs_lists</td><td>A list of DEGs data frames. Each data frame should contain at least a 'gene' column and a 'logFC' column.</td></tr>
+                        <tr><td>top.num</td><td>Numeric, the number of top genes to select based on their ranks. Default is 0, which selects all genes passing the thresholds.</td></tr>
+                        <tr><td>rra.p</td><td>Numeric, the p-value threshold for RRA. Default is 0.05.</td></tr>
+                        <tr><td>logFC.cut</td><td>Numeric, the log fold change threshold for filtering genes. Default is 1.</td></tr>
+                        <tr><td>p.cut</td><td>Numeric, the p-value threshold for filtering genes. Default is 0.05.</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A list containing the number of up- and downregulated genes and a data matrix of aggregated log fold changes.</p>
+                    <h4>Examples</h4>
+                    <pre><code>df1 <- get_OSF_data(table = "GSE31210", action = "geo_data")
+results1 <- DEGs_analysis(df1)
+df2 <- get_OSF_data(table = "GSE19188", action = "geo_data")
+results2 <- DEGs_analysis(df2)
+DEGs_lists <- list("GSE31210" = results1, "GSE19188" = results2)
+RRA_results <- RRA_analysis(DEGs_lists)
+ComplexHeatmap::pheatmap(RRA_results$RRA_results)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-combat_datasets">
+                    <div class="function-name">3.23 combat_datasets</div>
+                    <h4>Description</h4>
+                    <p>This function performs batch correction on multiple datasets using the ComBat function from the sva package.</p>
+                    <h4>Usage</h4>
+                    <pre><code>combat_datasets(tables, tumor_subtype = NULL)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>tables</td><td>A character vector of table names to be processed.</td></tr>
+                        <tr><td>tumor_subtype</td><td>A character string specifying the tumor subtype to filter the datasets. If NULL, all subtypes are included.</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A list containing the combined and batch-corrected data matrix and the sample information.</p>
+                    <h4>Examples</h4>
+                    <pre><code>tables <- c("GSE31210", "GSE74706")
+result <- combat_datasets(tables, tumor_subtype = "LC")
+combined_data <- result$combined_data
+sample_info <- result$sample_info</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-merge_clinic_data">
+                    <div class="function-name">3.24 merge_clinic_data</div>
+                    <h4>Description</h4>
+                    <p>Get sample_info data and merge it with expression data.</p>
+                    <h4>Usage</h4>
+                    <pre><code>merge_clinic_data(table = "GSE19188", data_input)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>table</td><td>Character. The name of the dataset table to retrieve sample information from. Default is "GSE19188".</td></tr>
+                        <tr><td>data_input</td><td>Data frame. Expression data obtained from get_expr_data() function.</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>Data frame. Merged data containing both expression data and sample information.</p>
+                    <h4>Examples</h4>
+                    <pre><code>data_input <- get_expr_data("GSE19188", "TP53")
+results <- merge_clinic_data("GSE19188",data_input)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-extract_subset">
+                    <div class="function-name">3.25 extract_subset</div>
+                    <h4>Description</h4>
+                    <p>This function searches for specified names within a nested list structure and extracts the names of found subsets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>extract_subset(lst, names_to_find)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>lst</td><td>A list which may contain nested lists.</td></tr>
+                        <tr><td>names_to_find</td><td>A character vector of names to search for within the list.</td></tr>
+                    </table>
+                    <h4>Value</h4>
+                    <p>A character vector of unique names from the found subsets.</p>
+                    <h4>Examples</h4>
+                    <pre><code>nested_list <- list(
+  a = list(
+    b = 1,
+    c = list(d = 2)
+  ),
+  e = 3
+)
+names_to_search <- c("b", "d", "e")
+result <- extract_subset(nested_list, names_to_search)
+print(result)</code></pre>
+                </div>
+                
+            </section>
+            
+            <section id="datasets">
+                <h2>4. Datasets</h2>
+                
+                <h3>4.1 dataset_info</h3>
+                <p>Summary of the general informations of the GEO datasets in this tool.</p>
+                <pre><code>data("dataset_info")</code></pre>
+                <p><strong>Format:</strong> A data frame with 288 observations on the following 6 variables.</p>
+                
+                <h3>4.2 abbr_full</h3>
+                <p>The full name of tumor abbreviation.</p>
+                <pre><code>data("abbr_full")</code></pre>
+                <p><strong>Format:</strong> A data frame with 132 observations on the following 3 variables.</p>
+                
+                <h3>4.3 Subtype</h3>
+                <p>Subtype list of all cancer types.</p>
+                <pre><code>data("subtype")</code></pre>
+                <p><strong>Format:</strong> List of 21.</p>
+                
+                <h3>4.4 TIL_map</h3>
+                <p>Mapping of immune cell types and algorithms.</p>
+                <pre><code>data("TIL_map")</code></pre>
+                
+                <h3>4.5 sample_subtype</h3>
+                <p>Subtype information of all samples.</p>
+                
+                <h3>4.6 GCAS_TIL</h3>
+                <p>Immune cell infiltration score of all samples calculated based on IOBR package.</p>
+                
+                <h3>4.7 GCAS_drug</h3>
+                <p>Anti-tumor drug sensitivity of all samples calculated based on oncoPredict package and GDSC database.</p>
+                
+                <h3>4.8 drug_info</h3>
+                <p>Anti-tumor drugs informations obtained from GDSC2.0 datasets.</p>
+            </section>
+            
+            <section id="demonstration">
+                <h2>5. Project Demonstration</h2>
+                
+                <h3>5.1 Expression and correlation analysis of GAPDH in lung cancer dataset GSE19188</h3>
+                <pre><code>library(GCAS)
+# 1. expression analysis
+df_single <- get_expr_data(datasets = "GSE19188",genes = c("TP53"))
+head(df_single)
+# ID  dataset     TP53      tissue subtype Patient.ID
+# 1 GSM475656 GSE19188 7.234300 Lung cancer     LCC           
+# 2 GSM475657 GSE19188 5.929781 Lung cancer  Normal           
+# 3 GSM475658 GSE19188 6.133078 Lung cancer  Normal           
+# 4 GSM475659 GSE19188 5.490305 Lung cancer  Normal           
+# 5 GSM475660 GSE19188 6.203595 Lung cancer  Normal           
+# 6 GSM475661 GSE19188 3.802667 Lung cancer     LCC
+p1 <- viz_TvsN(df_single,df_type = "single")
+p2 <- viz_TvsN(df_single,df_type = "single",tumor_subtype = c("LUAD"))
+p3 <- viz_TvsN(df_single,df_type = "single",tumor_subtype = c("LUAD","LUSC"))
+p1+p2+p3
+
+# 2. Correlation analysis
+results <- cor_cancer_genelist(dataset = "GSE19188",
+                               id1 = "GAPDH",tumor_subtype = "LC",
+                               id2 = c("FOXM1", "IGF2BP1"),
+                               sample_type = c("Tumor", "Normal"),
+                               cor_method = "pearson")
+viz_corplot(results$cor_data,
+            "GAPDH",
+            "FOXM1")
+</code></pre>
+
+                <h3>5.2 Expression and correlation analysis of GAPDH in multiple lung cancer datasets</h3>
+                <pre><code>library(GCAS)
+df_multi_set <- get_expr_data(datasets = c("GSE27262","GSE7670","GSE19188","GSE19804","GSE30219","GSE31210","GSE32665","GSE32863","GSE43458","GSE46539","GSE75037","GSE10072","GSE74706","GSE18842","GSE62113"), genes = "GAPDH")
+viz_TvsN(df_multi_set,df_type = "multi_set")
+
+results <- data_summary(df_multi_set, tumor_subtype = "LUAD")
+plot_meta_forest(results)
+</code></pre>
+
+                <h3>5.3 Differential expression gene analysis and co-expression analysis based on GSE19188 dataset</h3>
+                <pre><code>df <- get_OSF_data(table = "GSE19188", action = "geo_data")
+results <- DEGs_analysis(df, tumor_subtype = c("NSCLC"))
+plot_volcano(results)
+
+results <- coexpression_analysis(df, "GAPDH")
+</code></pre>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Toggle Function Reference submenu
+        document.querySelector('.toggle-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.toggle('expanded');
+            document.getElementById('function-submenu').classList.toggle('show');
+        });
+    </script>
+</body>
+</html>

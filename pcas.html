@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCAS - CPTAC Proteomics & Transcriptome Data Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            display: flex;
+            gap: 40px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        
+        .sidebar h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+        }
+        
+        .sidebar ul li {
+            margin-bottom: 8px;
+        }
+        
+        .sidebar ul li a {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 6px 10px;
+            display: block;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .sidebar ul li a:hover {
+            background: #3498db;
+            color: white;
+        }
+        
+        .sidebar .toggle-btn {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar .toggle-btn::after {
+            content: '▶';
+            font-size: 0.7rem;
+            transition: transform 0.2s;
+        }
+        
+        .sidebar .toggle-btn.expanded::after {
+            transform: rotate(90deg);
+        }
+        
+        .sidebar .submenu {
+            margin-left: 15px;
+            display: none;
+            border-left: 2px solid #eee;
+            padding-left: 10px;
+            margin-top: 5px;
+        }
+        
+        .sidebar .submenu.show {
+            display: block;
+        }
+        
+        .sidebar .submenu li a {
+            font-size: 0.85rem;
+            padding: 4px 8px;
+        }
+        
+        .content {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .hero-meta {
+            margin-top: 20px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .hero-meta span {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px;
+            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
+            color: #555;
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+            margin: 20px 0 10px;
+            color: #3498db;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        code {
+            background: #f5f7fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .function-box {
+            background: #f9fafc;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .function-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: 500;
+        }
+        
+        tr:hover {
+            background: #f5f7fa;
+        }
+        
+        .links a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        .citation-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="index.html">← Back to Home</a>
+            <span>PCAS Documentation v0.1.0</span>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Table of Contents</h3>
+            <ul>
+                <li><a href="#introduction">1. Introduction</a></li>
+                <li><a href="#installation">2. Installation</a></li>
+                <li><a href="#citation">3. Citation</a></li>
+                <li>
+                    <a href="#function-reference" class="toggle-btn">4. Function Reference</a>
+                    <ul class="submenu" id="function-submenu">
+                        <li><a href="#func-get_data">4.1 get_data</a></li>
+                        <li><a href="#func-get_expr_data">4.2 get_expr_data</a></li>
+                        <li><a href="#func-get_degs_result">4.3 get_DEGs_result</a></li>
+                        <li><a href="#func-merge_clinic_data">4.4 merge_clinic_data</a></li>
+                        <li><a href="#func-cor_cancer_genelist">4.5 cor_cancer_genelist</a></li>
+                        <li><a href="#func-cor_pancancer_genelist">4.6 cor_pancancer_genelist</a></li>
+                        <li><a href="#func-cor_pancancer_drug">4.7 cor_pancancer_drug</a></li>
+                        <li><a href="#func-cor_pancancer_TIL">4.8 cor_pancancer_TIL</a></li>
+                        <li><a href="#func-viz_TvsN">4.9 viz_TvsN</a></li>
+                        <li><a href="#func-viz_degs_volcano">4.10 viz_DEGs_volcano</a></li>
+                        <li><a href="#func-viz_cor_heatmap">4.11 viz_cor_heatmap</a></li>
+                        <li><a href="#func-viz_corplot">4.12 viz_corplot</a></li>
+                        <li><a href="#func-viz_phoso_sites">4.13 viz_phoso_sites</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+        
+        <main class="content">
+            <div class="hero">
+                <h1>PCAS - CPTAC Proteomics & Transcriptome Data Analysis</h1>
+                <p>An integrated tool for multi-dimensional cancer research utilizing Clinical Proteomic Tumor Analysis Consortium (CPTAC) data.</p>
+                <div class="hero-meta">
+                    <span>📦 Version: 0.1.0</span>
+                    <span>👤 Author: Jin Wang</span>
+                    <span>📧 Maintainer: jin.wang93@outlook.com</span>
+                    <span>📅 Date: 2024-06-19</span>
+                </div>
+            </div>
+            
+            <section id="introduction">
+                <h2>1. Introduction</h2>
+                <p>
+                    PCAS (Proteomics & Transcriptome Cancer Analysis Suite) is an R package designed for comprehensive analysis 
+                    and visualization of CPTAC proteomics and transcriptome data. This tool enables researchers to perform 
+                    differential expression analysis, correlation analysis, drug sensitivity analysis, and immune infiltration analysis.
+                </p>
+                <p>
+                    PCAS integrates data from multiple CPTAC cohorts and provides a user-friendly Shiny application for 
+                    interactive visualization. It is ideal for researchers studying cancer proteomics and seeking to explore 
+                    the relationship between protein expression and clinical outcomes.
+                </p>
+                <h3>Features</h3>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>Access to CPTAC proteomics and transcriptome data</li>
+                    <li>Differential expression analysis between tumor and normal samples</li>
+                    <li>Correlation analysis of mRNA/protein expression data</li>
+                    <li>Drug sensitivity analysis</li>
+                    <li>Immune cell infiltration analysis</li>
+                    <li>Interactive Shiny application</li>
+                </ul>
+                <h3>Dependencies</h3>
+                <p><strong>Imports:</strong> dplyr, drawProteins, ggplot2, jsonlite, psych, reshape2, shiny, tibble, ggpubr, ggrepel</p>
+                <p class="links">
+                    <strong>GitHub:</strong> <a href="https://github.com/WangJin93/PCAS">https://github.com/WangJin93/PCAS</a><br>
+                    <strong>Shiny App:</strong> <a href="https://jingle.shinyapps.io/PCAS/">https://jingle.shinyapps.io/PCAS/</a><br>
+                    <strong>Article:</strong> <a href="https://doi.org/10.3390/ijms25126690">https://doi.org/10.3390/ijms25126690</a>
+                </p>
+            </section>
+            
+            <section id="installation">
+                <h2>2. Installation</h2>
+                <p>You can install PCAS from GitHub using the remotes package:</p>
+                <pre><code>remotes::install_github("WangJin93/PCAS")</code></pre>
+                <p>To run the Shiny application:</p>
+                <pre><code>library(PCAS)
+PCAS_app()</code></pre>
+            </section>
+            
+            <section id="citation">
+                <h2>3. Citation</h2>
+                <div class="citation-box">
+                    <p>
+                        Wang J, Song X, Wei M, Qin L, Zhu Q, Wang S, Liang T, Hu W, Zhu X, Li J. 
+                        PCAS: An Integrated Tool for Multi-Dimensional Cancer Research Utilizing Clinical Proteomic 
+                        Tumor Analysis Consortium Data. <em>International Journal of Molecular Sciences</em>. 
+                        2024; 25(12):6690. 
+                        <a href="https://doi.org/10.3390/ijms25126690">https://doi.org/10.3390/ijms25126690</a>
+                    </p>
+                </div>
+            </section>
+            
+            <section id="function-reference">
+                <h2>4. Function Reference</h2>
+                
+                <div class="function-box" id="func-get_data">
+                    <div class="function-name">4.1 get_data</div>
+                    <h4>Description</h4>
+                    <p>Get the CPTAC data by using the API. All results are saved in MySQL database.</p>
+                    <h4>Usage</h4>
+                    <pre><code>get_data(
+  table = "LUAD_Academia_protein",
+  action = "expression",
+  genes = c("GAPDH", "TNS1")
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>table</td><td>For action = expression, use dataset$Abbre to get all tables; For action = clinic, remove _protein/_mRNA/_Phospho from dataset$Abbre.</td></tr>
+                        <tr><td>action</td><td>"expression", "degs" or "clinic".</td></tr>
+                        <tr><td>genes</td><td>Gene symbols, you can input one or multiple symbols.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>data <- get_data(table = "LUAD_Academia_protein", action = "expression", genes = c("GAPDH"))
+data <- get_data(table = "LUAD_Academia", action = "clinic", genes = NULL)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-get_expr_data">
+                    <div class="function-name">4.2 get_expr_data</div>
+                    <h4>Description</h4>
+                    <p>Get the mRNA/protein expression data in CPTAC database.</p>
+                    <h4>Usage</h4>
+                    <pre><code>get_expr_data(
+  datasets = c("LUAD_CPTAC_protein", "LSCC_CPTAC_protein"),
+  genes = c("TP53", "TNS1")
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>datasets</td><td>Dataset names, you can input one or multiple datasets. Use 'dataset$Abbre' to get all datasets.</td></tr>
+                        <tr><td>genes</td><td>Gene symbols, you can input one or multiple symbols.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>data <- get_expr_data(datasets = "LUAD_CPTAC_protein", genes = c("TP53", "TNS1"))
+data <- get_expr_data(datasets = c("LUAD_CPTAC_protein", "LSCC_CPTAC_protein"), genes = "GAPDH")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-get_degs_result">
+                    <div class="function-name">4.3 get_DEGs_result</div>
+                    <h4>Description</h4>
+                    <p>Get the results of differential expression analysis between tumor and normal samples in CPTAC datasets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>get_DEGs_result(dataset = "LUAD_CPTAC_protein", method = "t.test")</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>dataset</td><td>Use dataset$Abbre to get all tables.</td></tr>
+                        <tr><td>method</td><td>"limma" or "t.test".</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>results <- get_DEGs_result(dataset = "LUAD_CPTAC_protein", method = "t.test")
+results <- get_DEGs_result(dataset = "LUAD_CPTAC_protein", method = "limma")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-merge_clinic_data">
+                    <div class="function-name">4.4 merge_clinic_data</div>
+                    <h4>Description</h4>
+                    <p>Get clinic data and merge it with expression data.</p>
+                    <h4>Usage</h4>
+                    <pre><code>merge_clinic_data(cohort = "LUAD_APOLLO", data_input)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>cohort</td><td>Data cohort, for example, "LUAD_APOLLO", "LUAD_CPTAC".</td></tr>
+                        <tr><td>data_input</td><td>Expression data obtained from get_expr_data() function.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>expr_data <- get_expr_data(datasets = "LUAD_CPTAC_protein", genes = c("TP53"))
+merged_data <- merge_clinic_data(cohort = "LUAD_CPTAC", data_input = expr_data)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-cor_cancer_genelist">
+                    <div class="function-name">4.5 cor_cancer_genelist</div>
+                    <h4>Description</h4>
+                    <p>Perform correlation analysis of the mRNA/protein expression data in CPTAC database.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cor_cancer_genelist(
+  dataset1 = "LUAD_CPTAC_protein",
+  id1 = "STAT3",
+  dataset2 = "LUAD_CPTAC_mRNA",
+  id2 = c("TNS1", "TP53"),
+  sample_type = c("Tumor", "Normal"),
+  cor_method = "pearson"
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>dataset1</td><td>Dataset name. Use 'dataset$Abbre' to get all datasets.</td></tr>
+                        <tr><td>id1</td><td>Gene symbol, you can input one gene symbol.</td></tr>
+                        <tr><td>dataset2</td><td>Dataset name. Use 'dataset$Abbre' to get all datasets.</td></tr>
+                        <tr><td>id2</td><td>Gene symbols, you can input one or multiple symbols.</td></tr>
+                        <tr><td>sample_type</td><td>Sample type used for correlation analysis, default all types: c("Tumor", "Normal").</td></tr>
+                        <tr><td>cor_method</td><td>Method for correlation analysis, default "pearson".</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>results <- cor_cancer_genelist(
+  dataset1 = "LUAD_CPTAC_protein",
+  id1 = "STAT3",
+  dataset2 = "LUAD_CPTAC_mRNA",
+  id2 = c("TNS1", "TP53"),
+  sample_type = c("Tumor", "Normal"),
+  cor_method = "pearson"
+)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-cor_pancancer_genelist">
+                    <div class="function-name">4.6 cor_pancancer_genelist</div>
+                    <h4>Description</h4>
+                    <p>Perform correlation analysis of the mRNA/protein expression data in CPTAC database across multiple datasets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cor_pancancer_genelist(
+  df,
+  geneset_data,
+  sample_type = c("Tumor", "Normal"),
+  cor_method = "pearson"
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>The expression data of the target gene in multiple datasets, obtained by the get_expr_data() function.</td></tr>
+                        <tr><td>geneset_data</td><td>The expression data of a genelist in multiple datasets, obtained by the get_expr_data() function.</td></tr>
+                        <tr><td>sample_type</td><td>Sample type used for correlation analysis, default all types: c("Tumor", "Normal").</td></tr>
+                        <tr><td>cor_method</td><td>Method for correlation analysis, default "pearson".</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>target_data <- get_expr_data(datasets = c("LUAD_CPTAC_protein", "LSCC_CPTAC_protein"), genes = "STAT3")
+gene_list_data <- get_expr_data(datasets = c("LUAD_CPTAC_protein", "LSCC_CPTAC_protein"), genes = c("TNS1", "TP53"))
+results <- cor_pancancer_genelist(df = target_data, geneset_data = gene_list_data)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-cor_pancancer_drug">
+                    <div class="function-name">4.7 cor_pancancer_drug</div>
+                    <h4>Description</h4>
+                    <p>Calculate the correlation between target gene expression and anti-tumor drug sensitivity in multiple datasets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cor_pancancer_drug(
+  df,
+  cor_method = "pearson",
+  Target.pathway = c("Cell cycle")
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>The expression data of the target gene in multiple datasets, obtained by the get_expr_data() function.</td></tr>
+                        <tr><td>cor_method</td><td>Method for correlation analysis, default "pearson".</td></tr>
+                        <tr><td>Target.pathway</td><td>The signaling pathways of anti-tumor drug targets, default "Cell cycle". Use "drug_info" to get the detailed information of these drugs.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>target_data <- get_expr_data(datasets = c("LUAD_CPTAC_protein", "LSCC_CPTAC_protein"), genes = "STAT3")
+results <- cor_pancancer_drug(df = target_data, Target.pathway = c("Cell cycle"))</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-cor_pancancer_TIL">
+                    <div class="function-name">4.8 cor_pancancer_TIL</div>
+                    <h4>Description</h4>
+                    <p>Calculate the correlation between target gene expression and immune cells infiltration in multiple datasets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cor_pancancer_TIL(df, cor_method = "spearman", TIL_type = c("TIMER"))</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>The expression data of the target gene in multiple datasets, obtained by the get_expr_data() function.</td></tr>
+                        <tr><td>cor_method</td><td>Method for correlation analysis, default "spearman".</td></tr>
+                        <tr><td>TIL_type</td><td>Algorithm for calculating immune cell infiltration, default "TIMER".</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>target_data <- get_expr_data(datasets = c("LUAD_CPTAC_protein", "LSCC_CPTAC_protein"), genes = "STAT3")
+results <- cor_pancancer_TIL(df = target_data, cor_method = "spearman", TIL_type = c("TIMER"))</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-viz_TvsN">
+                    <div class="function-name">4.9 viz_TvsN</div>
+                    <h4>Description</h4>
+                    <p>Visualizing the differential expression of mRNA/protein expression data between Tumor and Normal tissues in CPTAC database.</p>
+                    <h4>Usage</h4>
+                    <pre><code>viz_TvsN(
+  df,
+  df_type = c("single", "multi_gene", "multi_set"),
+  Show.P.value = TRUE,
+  Show.P.label = TRUE,
+  Method = "t.test",
+  values = c("#00AFBB", "#FC4E07"),
+  Show.n = TRUE,
+  Show.n.location = "default"
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>Gene/protein expression data obtained from get_expr_data().</td></tr>
+                        <tr><td>df_type</td><td>The type of expression data: "single", "multi_gene", or "multi_set".</td></tr>
+                        <tr><td>Show.P.value</td><td>Whether to display the results of differential analysis, default TRUE.</td></tr>
+                        <tr><td>Show.P.label</td><td>Whether to display significance markers for differential analysis, default TRUE.</td></tr>
+                        <tr><td>Method</td><td>Methods of differential analysis, "t.test" or "limma", default "t.test".</td></tr>
+                        <tr><td>values</td><td>Color palette for normal and tumor groups. Default c("#00AFBB", "#FC4E07").</td></tr>
+                        <tr><td>Show.n</td><td>Display sample size.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>expr_data <- get_expr_data(datasets = "LUAD_CPTAC_protein", genes = c("TP53"))
+viz_TvsN(expr_data, df_type = "single")
+viz_TvsN(expr_data, df_type = "single", Method = "limma")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-viz_degs_volcano">
+                    <div class="function-name">4.10 viz_DEGs_volcano</div>
+                    <h4>Description</h4>
+                    <p>Plotting volcano plot for DEGs between tumor and normal samples in CPTAC datasets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>viz_DEGs_volcano(
+  df,
+  p.cut = 0.05,
+  logFC.cut = 1,
+  show.top = FALSE,
+  show.labels = NULL
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>DEG results from get_DEGs_result() function.</td></tr>
+                        <tr><td>p.cut</td><td>Numeric. The cutoff for adjusted p-value to determine significance. Default is 0.05.</td></tr>
+                        <tr><td>logFC.cut</td><td>Numeric. The cutoff for log fold change to determine significance. Default is 1.</td></tr>
+                        <tr><td>show.top</td><td>Logical. If TRUE, labels the top upregulated and downregulated genes. Default is FALSE.</td></tr>
+                        <tr><td>show.labels</td><td>Character vector. Specific gene labels to show. Default is NULL.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>degs <- get_DEGs_result(dataset = "LUAD_CPTAC_protein", method = "t.test")
+viz_DEGs_volcano(degs)
+viz_DEGs_volcano(degs, p.cut = 0.01, logFC.cut = 2, show.top = TRUE)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-viz_cor_heatmap">
+                    <div class="function-name">4.11 viz_cor_heatmap</div>
+                    <h4>Description</h4>
+                    <p>Presenting correlation analysis results using heat maps based on ggplot2.</p>
+                    <h4>Usage</h4>
+                    <pre><code>viz_cor_heatmap(r, p)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>r</td><td>The correlation coefficient matrix r of the correlation analysis results obtained from cor_pancancer_genelist(), cor_pancancer_TIL(), and cor_pancancer_drug().</td></tr>
+                        <tr><td>p</td><td>The p-value matrix p of the correlation analysis results.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>target_data <- get_expr_data(datasets = c("LUAD_CPTAC_protein"), genes = "STAT3")
+gene_list_data <- get_expr_data(datasets = c("LUAD_CPTAC_protein"), genes = c("TNS1", "TP53"))
+results <- cor_pancancer_genelist(df = target_data, geneset_data = gene_list_data)
+viz_cor_heatmap(results$r, results$p)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-viz_corplot">
+                    <div class="function-name">4.12 viz_corplot</div>
+                    <h4>Description</h4>
+                    <p>Scatter plot with sample size (n), correlation coefficient (r) and p value (p.value).</p>
+                    <h4>Usage</h4>
+                    <pre><code>viz_corplot(
+  data,
+  a,
+  b,
+  method = "pearson",
+  x_lab = " relative expression",
+  y_lab = " relative expression"
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>data</td><td>A gene expression dataset with at least two genes included, rows represent samples, and columns represent gene expression in the matrix.</td></tr>
+                        <tr><td>a</td><td>Gene A</td></tr>
+                        <tr><td>b</td><td>Gene B</td></tr>
+                        <tr><td>method</td><td>Method for correlation analysis, "pearson" or "spearman".</td></tr>
+                        <tr><td>x_lab</td><td>X-axis label.</td></tr>
+                        <tr><td>y_lab</td><td>Y-axis label.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>expr_data <- get_expr_data(datasets = "LUAD_CPTAC_protein", genes = c("TP53", "TNS1"))
+viz_corplot(expr_data, a = "TP53", b = "TNS1", method = "pearson")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-viz_phoso_sites">
+                    <div class="function-name">4.13 viz_phoso_sites</div>
+                    <h4>Description</h4>
+                    <p>Query phosphorylation site information of target proteins based on CPTAC database phosphorylation proteomics data or UniProt database.</p>
+                    <h4>Usage</h4>
+                    <pre><code>viz_phoso_sites(gene = "YTHDC2", phoso_infoDB = "CPTAC")</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>gene</td><td>Gene/protein symbol.</td></tr>
+                        <tr><td>phoso_infoDB</td><td>Database for extracting phosphorylation site information. Only supports 'UniProt' and 'CPTAC'. Default "CPTAC".</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>viz_phoso_sites(gene = "YTHDC2", phoso_infoDB = "CPTAC")
+viz_phoso_sites(gene = "YTHDC2", phoso_infoDB = "UniProt")</code></pre>
+                </div>
+                
+            </section>
+        </main>
+    </div>
+    
+    <script>
+        // Toggle Function Reference submenu
+        document.querySelector('.toggle-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.toggle('expanded');
+            document.getElementById('function-submenu').classList.toggle('show');
+        });
+    </script>
+</body>
+</html>
