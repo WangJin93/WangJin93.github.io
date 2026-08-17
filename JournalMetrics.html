@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JournalMetrics 用户说明书 v1.0.2</title>
+<style>
+  :root {
+    --primary: #1a73e8;
+    --primary-dark: #1557b0;
+    --success: #4CAF50;
+    --warning: #FF9800;
+    --danger: #F44336;
+    --q1: #4CAF50;
+    --q2: #2196F3;
+    --q3: #FF9800;
+    --q4: #F44336;
+    --b1: #E91E63;
+    --b2: #9C27B0;
+    --b3: #673AB7;
+    --b4: #3F51B5;
+    --bg: #f8f9fa;
+    --text: #333;
+    --text-light: #666;
+    --border: #e0e0e0;
+    --code-bg: #f5f5f5;
+    --sidebar-bg: #ffffff;
+    --sidebar-width: 260px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Roboto, sans-serif;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  /* 外层页面容器 */
+  .page-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    gap: 32px;
+    padding: 24px 20px;
+  }
+
+  /* 侧边悬浮导航 */
+  .sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+  }
+  .sidebar-inner {
+    position: sticky;
+    top: 20px;
+    background: var(--sidebar-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 20px 16px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border: 1px solid var(--border);
+  }
+  .sidebar-inner::-webkit-scrollbar { width: 6px; }
+  .sidebar-inner::-webkit-scrollbar-track { background: transparent; }
+  .sidebar-inner::-webkit-scrollbar-thumb {
+    background: #d0d0d0;
+    border-radius: 3px;
+  }
+  .sidebar-inner::-webkit-scrollbar-thumb:hover { background: #b0b0b0; }
+
+  .sidebar-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .sidebar-nav li {
+    margin: 2px 0;
+  }
+  .sidebar-nav a {
+    display: block;
+    padding: 8px 12px;
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 6px;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    line-height: 1.4;
+  }
+  .sidebar-nav a:hover {
+    background: #e8f0fe;
+    color: var(--primary);
+    border-left-color: var(--primary);
+  }
+  .sidebar-nav a.active {
+    background: #e8f0fe;
+    color: var(--primary-dark);
+    font-weight: 600;
+    border-left-color: var(--primary);
+  }
+
+  /* 小屏切换按钮 */
+  .sidebar-toggle {
+    display: none;
+    position: fixed;
+    left: 12px;
+    top: 12px;
+    z-index: 100;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(26,115,232,0.3);
+  }
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 98;
+  }
+  .sidebar-overlay.show { display: block; }
+
+  /* 主内容区 */
+  .main-content {
+    flex: 1;
+    min-width: 0;
+    max-width: 900px;
+    background: white;
+    border-radius: 12px;
+    padding: 40px 48px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .header {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
+    color: white;
+    border-radius: 12px;
+    margin-bottom: 40px;
+  }
+  .header h1 { font-size: 36px; margin-bottom: 8px; }
+  .header .subtitle { font-size: 18px; opacity: 0.9; }
+  .header .version { font-size: 14px; opacity: 0.7; margin-top: 8px; }
+
+  h2 {
+    font-size: 26px;
+    color: var(--primary);
+    margin: 40px 0 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    scroll-margin-top: 20px;
+  }
+  h3 {
+    font-size: 20px;
+    color: var(--text);
+    margin: 24px 0 16px;
+    scroll-margin-top: 20px;
+  }
+  h4 {
+    font-size: 16px;
+    color: var(--text);
+    margin: 20px 0 12px;
+  }
+  p { margin: 12px 0; }
+  ul, ol { margin: 12px 0; padding-left: 24px; }
+  li { margin: 6px 0; }
+  .feature-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 20px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .feature-card .feature-title {
+    font-size: 18px;
+    color: var(--primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .placeholder {
+    background: var(--bg);
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    margin: 16px 0;
+    color: var(--text-light);
+    font-size: 14px;
+  }
+  .placeholder .icon { font-size: 32px; margin-bottom: 8px; }
+  .placeholder .label { font-weight: 600; }
+  /* 真实图片占位样式 */
+  .placeholder.with-image {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .placeholder.with-image .label {
+    margin-top: 10px;
+    color: var(--text);
+  }
+  .screenshot-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin: 0 auto;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+  }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .tag-q1 { background: var(--q1); color: white; }
+  .tag-q2 { background: var(--q2); color: white; }
+  .tag-q3 { background: var(--q3); color: white; }
+  .tag-q4 { background: var(--q4); color: white; }
+  .tag-b1 { background: var(--b1); color: white; }
+  .tag-b2 { background: var(--b2); color: white; }
+  .tag-b3 { background: var(--b3); color: white; }
+  .tag-b4 { background: var(--b4); color: white; }
+  .tag-yes { background: var(--success); color: white; }
+  .tag-no { background: #9E9E9E; color: white; }
+  .tag-hybrid { background: #2196F3; color: white; }
+  .tag-transformative { background: var(--warning); color: white; }
+  .tag-top { background: #FFD700; color: #333; }
+  .info-box {
+    background: #E3F2FD;
+    border-left: 4px solid var(--primary);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+  }
+  .info-box .label {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+  .warning-box {
+    background: #FFF3E0;
+    border-left: 4px solid var(--warning);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+  }
+  .warning-box .label {
+    font-weight: 600;
+    color: var(--warning);
+    margin-bottom: 4px;
+  }
+  .code-block {
+    background: var(--code-bg);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 14px;
+    overflow-x: auto;
+    margin: 12px 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+  }
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: var(--bg);
+    font-weight: 600;
+  }
+  .step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .step-content {
+    display: flex;
+    align-items: flex-start;
+    margin: 12px 0;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .feature-item {
+    background: var(--bg);
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .feature-item .name {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+  .feature-item .desc {
+    font-size: 14px;
+    color: var(--text-light);
+  }
+  .footer-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-light);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* 响应式：小屏幕 */
+  @media (max-width: 960px) {
+    .page-container {
+      padding: 12px;
+      gap: 0;
+    }
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      max-width: 80vw;
+      z-index: 99;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      background: white;
+    }
+    .sidebar.show {
+      transform: translateX(0);
+    }
+    .sidebar-inner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      max-width: 80vw;
+      max-height: 100vh;
+      border-radius: 0;
+      border: none;
+      box-shadow: 2px 0 20px rgba(0,0,0,0.15);
+      padding-top: 60px;
+    }
+    .sidebar-toggle {
+      display: block;
+    }
+    .main-content {
+      padding: 48px 20px 32px;
+      border-radius: 8px;
+    }
+    .header h1 { font-size: 28px; }
+    h2 { font-size: 22px; }
+  }
+
+  @media print {
+    body { max-width: 100%; padding: 0; background: white; }
+    .page-container { display: block; max-width: 100%; padding: 0; }
+    .sidebar, .sidebar-toggle, .sidebar-overlay { display: none !important; }
+    .main-content { box-shadow: none; padding: 0; max-width: 100%; border-radius: 0; }
+    .header { background: var(--primary); }
+    .placeholder { background: #f0f0f0; border-color: #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<button class="sidebar-toggle" onclick="toggleSidebar()">☰ 目录</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="page-container">
+
+  <!-- 侧边悬浮导航 -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+      <div class="sidebar-title">📋 目录导航</div>
+      <ul class="sidebar-nav" id="sidebarNav">
+        <li><a href="#introduction">1. 产品简介</a></li>
+        <li><a href="#installation">2. 安装指南</a></li>
+        <li><a href="#features">3. 功能总览</a></li>
+        <li><a href="#journal-info">4. 期刊信息展示</a></li>
+        <li><a href="#settings">5. 设置面板</a></li>
+        <li><a href="#filter">6. 文献筛选功能</a></li>
+        <li><a href="#statistics">7. 统计分析功能</a></li>
+        <li><a href="#bypass">8. 访问辅助功能</a></li>
+        <li><a href="#data-source">9. 数据源说明</a></li>
+        <li><a href="#faq">10. 常见问题</a></li>
+        <li><a href="#author">11. 作者信息</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+
+    <div class="header">
+      <h1>📊 JournalMetrics</h1>
+      <div class="subtitle">PubMed 期刊信息增强与统计分析插件</div>
+      <div class="version">用户说明书 · 版本 1.0.2 · 更新于 2026-08-11</div>
+    </div>
+
+    <!-- 1. 产品简介 -->
+    <h2 id="introduction">1. 产品简介</h2>
+
+    <p><strong>JournalMetrics</strong> 是一款专为 PubMed 设计的 Chrome 浏览器扩展，旨在为科研人员提供便捷的期刊信息查询、文献筛选和结果统计分析工具。</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <div class="name">🔍 期刊信息展示</div>
+        <div class="desc">在 PubMed 搜索结果页直接显示期刊的影响因子、JCR 分区、CAS 分区等核心指标</div>
+      </div>
+      <div class="feature-item">
+        <div class="name">🎯 智能筛选</div>
+        <div class="desc">根据影响因子范围、JCR 或 CAS 分区快速筛选文献</div>
+      </div>
+      <div class="feature-item">
+        <div class="name">📊 统计分析</div>
+        <div class="desc">对检索结果进行分区分布、影响因子分布、年份分布等多维统计</div>
+      </div>
+      <div class="feature-item">
+        <div class="name">🔓 访问辅助</div>
+        <div class="desc">将 Google reCAPTCHA 重定向到国内可访问的 recaptcha.net 镜像，确保验证正常完成</div>
+      </div>
+      <div class="feature-item">
+        <div class="name">📄 详情增强</div>
+        <div class="desc">在文章详情页补充完整的期刊信息</div>
+      </div>
+      <div class="feature-item">
+        <div class="name">⚙️ 自定义配置</div>
+        <div class="desc">灵活配置显示项，按需展示期刊的各项指标</div>
+      </div>
+    </div>
+
+    <h3>支持的浏览器</h3>
+    <ul>
+      <li>Google Chrome 88+ (Manifest V3)</li>
+      <li>Microsoft Edge 88+</li>
+      <li>其他基于 Chromium 的浏览器</li>
+    </ul>
+
+    <!-- 2. 安装指南 -->
+    <h2 id="installation">2. 安装指南</h2>
+
+    <h3>2.1 加载已解压的扩展程序</h3>
+
+    <div class="step-content">
+      <span class="step-number">1</span>
+      <div>
+        <p>打开 Chrome 浏览器，在地址栏输入 <code>chrome://extensions</code> 并回车。</p>
+      </div>
+    </div>
+
+    <div class="step-content">
+      <span class="step-number">2</span>
+      <div>
+        <p>打开右上角的 <strong>开发者模式</strong> 开关。</p>
+      </div>
+    </div>
+
+    <div class="step-content">
+      <span class="step-number">3</span>
+      <div>
+        <p>点击左侧的 <strong>"加载已解压的扩展程序"</strong> 按钮。</p>
+      </div>
+    </div>
+
+    <div class="step-content">
+      <span class="step-number">4</span>
+      <div>
+        <p>选择插件所在的文件夹（包含 manifest.json 的目录），例如：</p>
+        <div class="code-block">journal-info-plugin-stats/</div>
+      </div>
+    </div>
+
+    <div class="step-content">
+      <span class="step-number">5</span>
+      <div>
+        <p>安装成功后，点击浏览器工具栏的拼图图标 🧩，将 JournalMetrics 固定到工具栏。</p>
+      </div>
+    </div>
+
+    <div class="placeholder with-image">
+      <img src="img/image1.png" alt="扩展程序管理页面" class="screenshot-img">
+      <div class="label">扩展程序管理页面</div>
+      <div>chrome://extensions</div>
+    </div>
+
+    <h3>2.2 首次使用</h3>
+
+    <ol>
+      <li>打开 <a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank">PubMed</a> 网站</li>
+      <li>执行一次文献检索</li>
+      <li>页面将自动加载期刊信息，在每条文献下方显示信息框</li>
+      <li>点击插件图标打开设置面板，根据需要调整显示项</li>
+    </ol>
+
+    <div class="info-box">
+      <div class="label">💡 提示</div>
+      <p>插件默认开启 Access Helper 功能，通过将 Google reCAPTCHA 请求重定向到国内可访问的 <code>recaptcha.net</code> 镜像站点，确保验证流程正常完成。如果遇到问题，请检查设置中的 Access Helper 开关。</p>
+    </div>
+
+    <!-- 3. 功能总览 -->
+    <h2 id="features">3. 功能总览</h2>
+
+    <p>JournalMetrics 提供以下核心功能模块：</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>功能模块</th>
+          <th>说明</th>
+          <th>默认状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>期刊信息展示</td>
+          <td>在搜索结果和详情页显示期刊指标</td>
+          <td>✅ 开启</td>
+        </tr>
+        <tr>
+          <td>文献筛选面板</td>
+          <td>按 IF/JCR/CAS 分区筛选文献</td>
+          <td>✅ 开启</td>
+        </tr>
+        <tr>
+          <td>统计分析</td>
+          <td>对检索结果进行统计分析</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>访问辅助 (Access Helper)</td>
+          <td>重定向 reCAPTCHA 到 recaptcha.net 镜像</td>
+          <td>✅ 开启</td>
+        </tr>
+        <tr>
+          <td>扩展信息展示</td>
+          <td>自引率、OA、APC 等扩展字段</td>
+          <td>❌ 关闭</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 4. 期刊信息展示 -->
+    <h2 id="journal-info">4. 期刊信息展示</h2>
+
+    <h3>4.1 搜索结果页展示</h3>
+
+    <p>在 PubMed 搜索结果页面，每条文献下方会自动出现一个期刊信息框（Journal Info Box），显示该文献所在期刊的各项指标。</p>
+
+    <div class="placeholder with-image">
+      <img src="img/image2.png" alt="搜索结果页期刊信息展示" class="screenshot-img">
+      <div class="label">搜索结果页期刊信息展示</div>
+      <div>显示文献下方的信息框，包含 IF、JCR、CAS 等信息</div>
+    </div>
+
+    <h3>4.2 详情页展示</h3>
+
+    <p>在文献详情页（点击文献标题进入的页面），期刊信息会显示在文章引用（Article Citation）下方的独立信息框中。</p>
+
+    <div class="placeholder with-image">
+      <img src="img/image3.png" alt="详情页期刊信息展示" class="screenshot-img">
+      <div class="label">详情页期刊信息展示</div>
+      <div>显示在 .article-citation 下方</div>
+    </div>
+
+    <h3>4.3 可显示的信息字段</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>字段</th>
+          <th>说明</th>
+          <th>示例</th>
+          <th>默认</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Impact Factor (IF)</strong></td>
+          <td>期刊影响因子</td>
+          <td>84.5</td>
+          <td>✅</td>
+        </tr>
+        <tr>
+          <td><strong>JCR Quartile</strong></td>
+          <td>JCR 分区（按学科领域排名）</td>
+          <td><span class="tag tag-q1">Q1</span></td>
+          <td>✅</td>
+        </tr>
+        <tr>
+          <td><strong>CAS Block</strong></td>
+          <td>中科院分区（按SCI期刊分区）</td>
+          <td><span class="tag tag-b1">B1</span></td>
+          <td>✅</td>
+        </tr>
+        <tr>
+          <td><strong>Top Journal</strong></td>
+          <td>顶级期刊标记</td>
+          <td><span class="tag tag-top">TOP</span></td>
+          <td>✅</td>
+        </tr>
+        <tr>
+          <td><strong>SCI</strong></td>
+          <td>是否为 SCI 收录期刊</td>
+          <td>SCI: Yes / SCI: No</td>
+          <td>自动</td>
+        </tr>
+        <tr>
+          <td><strong>Self-Citation Rate</strong></td>
+          <td>自引率</td>
+          <td>2.800%</td>
+          <td>❌</td>
+        </tr>
+        <tr>
+          <td><strong>Website</strong></td>
+          <td>期刊官方网站链接</td>
+          <td>Link</td>
+          <td>❌</td>
+        </tr>
+        <tr>
+          <td><strong>Open Access</strong></td>
+          <td>开放获取状态</td>
+          <td><span class="tag tag-yes">Yes</span> / <span class="tag tag-no">No</span> / <span class="tag tag-hybrid">Hybrid</span></td>
+          <td>❌</td>
+        </tr>
+        <tr>
+          <td><strong>Publisher</strong></td>
+          <td>出版商名称</td>
+          <td>Elsevier</td>
+          <td>❌</td>
+        </tr>
+        <tr>
+          <td><strong>Country</strong></td>
+          <td>出版商所在国家</td>
+          <td>Netherlands</td>
+          <td>❌</td>
+        </tr>
+        <tr>
+          <td><strong>Articles/Year</strong></td>
+          <td>年发文量</td>
+          <td>1,234</td>
+          <td>❌</td>
+        </tr>
+        <tr>
+          <td><strong>Research Proportion</strong></td>
+          <td>研究论文占比</td>
+          <td>92.3%</td>
+          <td>❌</td>
+        </tr>
+        <tr>
+          <td><strong>APC</strong></td>
+          <td>版面费（不同货币）</td>
+          <td>USD 5,000</td>
+          <td>❌</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>4.4 分区颜色说明</h3>
+
+    <h4>JCR 分区</h4>
+    <table>
+      <tr><td><span class="tag tag-q1">Q1</span></td><td>绿色 - 该学科领域前 25%</td></tr>
+      <tr><td><span class="tag tag-q2">Q2</span></td><td>蓝色 - 25%~50%</td></tr>
+      <tr><td><span class="tag tag-q3">Q3</span></td><td>橙色 - 50%~75%</td></tr>
+      <tr><td><span class="tag tag-q4">Q4</span></td><td>红色 - 后 25%</td></tr>
+    </table>
+
+    <h4>中科院分区 (CAS)</h4>
+    <table>
+      <tr><td><span class="tag tag-b1">B1</span></td><td>红色 - 医学、生物类 Top 期刊</td></tr>
+      <tr><td><span class="tag tag-b2">B2</span></td><td>紫色 - 医学、生物类代表期刊</td></tr>
+      <tr><td><span class="tag tag-b3">B3</span></td><td>深紫 - 医学、生物类一般期刊</td></tr>
+      <tr><td><span class="tag tag-b4">B4</span></td><td>靛蓝 - 医学、生物类冷门期刊</td></tr>
+    </table>
+
+    <div class="warning-box">
+      <div class="label">⚠️ 注意</div>
+      <p>分区颜色仅用于视觉区分，实际分区含义以 JCR 和中科院分区标准为准。</p>
+    </div>
+
+    <!-- 5. 设置面板 -->
+    <h2 id="settings">5. 设置面板</h2>
+
+    <h3>5.1 打开设置</h3>
+
+    <p>点击浏览器工具栏的 JournalMetrics 图标 📊，将弹出设置面板。</p>
+
+    <div class="placeholder with-image">
+      <img src="img/image4.png" alt="插件图标位置" class="screenshot-img">
+      <div class="label">插件图标位置</div>
+    </div>
+
+    <h3>5.2 设置项说明</h3>
+
+    <p>设置面板分为三个区块：</p>
+
+    <h4>🔹 Basic Info（基础信息）</h4>
+    <table>
+      <tr><th>设置项</th><th>说明</th></tr>
+      <tr><td>Impact Factor (IF)</td><td>显示期刊影响因子</td></tr>
+      <tr><td>JCR Quartile</td><td>显示 JCR 分区</td></tr>
+      <tr><td>CAS Block</td><td>显示中科院分区</td></tr>
+      <tr><td>Top Journal</td><td>显示顶级期刊标记</td></tr>
+    </table>
+
+    <h4>🔹 Access Helper（访问辅助）</h4>
+    <table>
+      <tr><th>设置项</th><th>说明</th></tr>
+      <tr><td>Access Helper</td><td>开启/关闭 reCAPTCHA 镜像重定向功能</td></tr>
+    </table>
+
+    <h4>🔹 Additional Info（扩展信息）</h4>
+    <table>
+      <tr><th>设置项</th><th>说明</th></tr>
+      <tr><td>Self-Citation Rate</td><td>自引率</td></tr>
+      <tr><td>Website</td><td>期刊网站链接</td></tr>
+      <tr><td>Open Access</td><td>开放获取状态</td></tr>
+      <tr><td>Publisher</td><td>出版商</td></tr>
+      <tr><td>Country</td><td>出版国家</td></tr>
+      <tr><td>Annual Article Count</td><td>年发文量</td></tr>
+      <tr><td>Research Articles Proportion</td><td>研究论文占比</td></tr>
+      <tr><td>APC</td><td>版面费</td></tr>
+    </table>
+
+    <div class="info-box">
+      <div class="label">💡 提示</div>
+      <p>设置会自动保存到浏览器本地存储，刷新页面后立即生效。建议根据实际需求开启扩展信息，避免信息框过长影响阅读。</p>
+    </div>
+
+
+    <!-- 6. 文献筛选功能 -->
+    <h2 id="filter">6. 文献筛选功能</h2>
+
+    <h3>6.1 筛选面板</h3>
+
+    <p>在 PubMed 搜索结果页，页面右侧会出现一个可折叠的悬浮筛选面板。</p>
+
+    <ul>
+      <li>点击 <strong>"Filter"</strong> 按钮展开筛选面板</li>
+      <li>点击面板外部或再次点击按钮可折叠面板</li>
+      <li>设置筛选条件后点击 <strong>"Apply"</strong> 应用筛选</li>
+      <li>点击 <strong>"Reset"</strong> 重置所有筛选条件</li>
+    </ul>
+
+    <div class="placeholder with-image">
+      <img src="img/image5.png" alt="筛选面板展开状态" class="screenshot-img">
+      <div class="label">筛选面板展开状态</div>
+    </div>
+
+    <h3>6.2 筛选条件</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>筛选类型</th>
+          <th>选项</th>
+          <th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Impact Factor</strong></td>
+          <td>最低 IF 值</td>
+          <td>仅显示影响因子 ≥ 设定值的文献</td>
+        </tr>
+        <tr>
+          <td><strong>JCR Partition</strong></td>
+          <td>Q1 / Q2 / Q3 / Q4</td>
+          <td>按 JCR 分区筛选，可多选</td>
+        </tr>
+        <tr>
+          <td><strong>CAS Partition</strong></td>
+          <td>B1 / B2 / B3 / B4</td>
+          <td>按中科院分区筛选，可多选</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>6.3 筛选效果</h3>
+
+    <ul>
+      <li>筛选后，不符合条件的文献将被隐藏</li>
+      <li>信息框中会显示筛选状态指示</li>
+      <li>支持多个条件组合筛选（AND 逻辑）</li>
+    </ul>
+
+    <div class="placeholder with-image">
+      <img src="img/image6.png" alt="筛选前后对比" class="screenshot-img">
+      <div class="label">筛选前后对比</div>
+      <div>左侧：筛选前；右侧：筛选后</div>
+    </div>
+
+    <!-- 7. 统计分析功能 -->
+    <h2 id="statistics">7. 统计分析功能</h2>
+
+    <h3>7.1 启动统计分析</h3>
+
+    <ol>
+      <li>在 PubMed 搜索结果页，点击页面底部的 <strong>📈 Stats</strong> 按钮</li>
+      <li>弹窗显示 "Analyze current page?"，点击 <strong>"OK"</strong></li>
+      <li>自动跳转至统计分析页面</li>
+    </ol>
+
+    <div class="placeholder with-image">
+      <img src="img/image7.png" alt="Stats 按钮位置" class="screenshot-img">
+      <div class="label">Stats 按钮位置</div>
+    </div>
+
+    <h3>7.2 统计内容</h3>
+
+    <h4>📈 摘要统计</h4>
+    <table>
+      <tr><th>指标</th><th>说明</th></tr>
+      <tr><td>Total Articles</td><td>当前页面文献总数</td></tr>
+      <tr><td>SCI Articles</td><td>SCI 收录期刊文献数</td></tr>
+      <tr><td>Average IF</td><td>所有文献所在期刊的平均影响因子</td></tr>
+      <tr><td>Median IF</td><td>影响因子中位数</td></tr>
+    </table>
+    <div class="placeholder with-image">
+      <img src="img/image8.png" alt="JCR 分区分布图" class="screenshot-img">
+      <div class="label">JCR 分区分布图</div>
+    </div>
+    <h4>🏆 JCR 分区分布</h4>
+    <p>以条形图展示各 JCR 分区的文献数量分布。</p>
+
+
+
+    <h4>🏢 CAS 分区分布</h4>
+    <p>以条形图展示各中科院分区的文献数量分布。</p>
+
+
+    <h4>📅 发表年份分布</h4>
+    <p>展示文献发表年份的分布情况，按年份统计文献数量。</p>
+
+
+
+    <h4>📊 影响因子分布</h4>
+    <p>按影响因子区间统计文献数量（如 IF 0-10, 10-20, 20-50, 50+）。</p>
+    <div class="placeholder with-image">
+      <img src="img/image9.png" alt="Top 10 期刊表格" class="screenshot-img">
+      <div class="label">Top 10 期刊表格</div>
+    </div>
+
+
+    <h4>🌐 开放获取分布</h4>
+    <p>展示 Open Access 状态的分布（Yes/No/Hybrid/Transformative）。</p>
+
+
+
+    <h4>🎯 Top 10 发文最多期刊</h4>
+    <p>列出当前页面发表文章最多的前 10 个期刊，并提供完整的期刊信息：</p>
+
+    <table>
+      <tr><th>列</th><th>说明</th></tr>
+      <tr><td>Rank</td><td>排名</td></tr>
+      <tr><td>Journal</td><td>期刊名称</td></tr>
+      <tr><td>Count</td><td>发文数量</td></tr>
+      <tr><td>Avg IF</td><td>平均影响因子</td></tr>
+      <tr><td>JCR</td><td>JCR 分区</td></tr>
+      <tr><td>CAS</td><td>中科院分区</td></tr>
+      <tr><td>Self-Cite%</td><td>自引率</td></tr>
+      <tr><td>OA</td><td>开放获取状态</td></tr>
+      <tr><td>APC</td><td>版面费</td></tr>
+      <tr><td>Articles</td><td>年发文量</td></tr>
+      <tr><td>Publisher</td><td>出版商</td></tr>
+      <tr><td>Country</td><td>出版国家</td></tr>
+      <tr><td>Website</td><td>期刊网站</td></tr>
+    </table>
+
+
+
+    <div class="info-box">
+      <div class="label">💡 提示</div>
+      <p>统计分析基于当前页面加载的所有文献。如需分析更多文献，可在 PubMed 搜索结果页增加每页显示数量（Settings → Display → Items per page）。</p>
+    </div>
+
+    <!-- 8. 访问辅助功能 -->
+    <h2 id="bypass">8. 访问辅助功能 (Access Helper)</h2>
+
+    <h3>8.1 问题背景</h3>
+
+    <p>PubMed 为防止自动化滥用，会对可疑访问触发 <strong>Google reCAPTCHA BOQ（Browser Only Challenge）</strong>验证机制。当系统判断请求异常时，会将用户重定向到 Google 的 reCAPTCHA 挑战页面（<code>google.com/recaptcha/challengepage</code>）。</p>
+
+    <p>对于中国大陆用户而言，由于 <code>google.com</code> 在国内网络环境下不可达，一旦被重定向到该验证页面，验证组件的脚本、iframe 等资源无法加载，用户将<strong>永久卡在 "Checking your browser" 页面</strong>，无法继续访问 PubMed。</p>
+
+    <div class="info-box">
+      <div class="label">💡 核心思路</div>
+      <p>Access Helper 的核心思路是<strong>将 Google reCAPTCHA 请求重定向到国内可访问的镜像站点</strong>，使验证流程正常完成，而非阻断或绕过验证。Google 官方提供了 <code>recaptcha.net</code> 作为 reCAPTCHA 的备用域名，该域名在国内可以正常访问。</p>
+    </div>
+
+    <h3>8.2 工作原理</h3>
+
+    <p>Access Helper 通过 <strong>DeclarativeNetRequest (DNR)</strong> API 和内容脚本实现请求重定向，包含以下机制：</p>
+
+    <div class="feature-card">
+      <div class="feature-title">🔀 DNR 请求重定向（网络层，零延迟）</div>
+      <p>通过 <code>rules.json</code> 配置以下重定向规则：</p>
+      <table>
+        <tr><th>规则</th><th>原始地址</th><th>重定向到</th><th>说明</th></tr>
+        <tr>
+          <td>规则 #1</td>
+          <td><code>google.com/recaptcha/*</code></td>
+          <td><code>recaptcha.net/recaptcha/*</code></td>
+          <td>将 reCAPTCHA 验证页面和资源重定向到 Google 官方备用域名（国内可访问）</td>
+        </tr>
+        <tr>
+          <td>规则 #2</td>
+          <td><code>ajax.googleapis.com/*</code></td>
+          <td><code>gapis.geekzu.org/ajax/*</code></td>
+          <td>将 Google AJAX 库重定向到国内镜像站</td>
+        </tr>
+        <tr>
+          <td>规则 #3</td>
+          <td colspan="3">移除 PubMed 页面的 <code>Content-Security-Policy</code> 响应头，允许镜像站点的脚本正常加载执行</td>
+        </tr>
+      </table>
+      <p><strong>效果：</strong>当 PubMed 触发 reCAPTCHA 时，DNR 在网络层将 <code>google.com/recaptcha</code> 的请求自动重定向到 <code>recaptcha.net/recaptcha</code>。验证页面从 <code>recaptcha.net</code> 加载，国内用户可正常完成验证后返回 PubMed。</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-title">📝 Content Script 兜底（页面层）</div>
+      <p>当 DNR 规则未能拦截时（如通过 JavaScript 动态触发跳转），内容脚本作为兜底：</p>
+      <ul>
+        <li><strong>URL 检测：</strong>页面加载时立即检查 URL，若仍在 <code>google.com/recaptcha</code> 则通过 <code>window.location.replace</code> 跳转到 <code>recaptcha.net</code></li>
+        <li><strong>SPA 监听：</strong>通过 patch <code>history.pushState</code> 监听客户端路由变化，捕获动态重定向</li>
+        <li><strong>popstate 监听：</strong>监听浏览器后退/前进事件中的 reCAPTCHA 跳转</li>
+      </ul>
+    </div>
+
+    <h3>8.3 浏览器指纹伪装</h3>
+
+    <p>为降低触发 reCAPTCHA 的概率，Access Helper 还会通过注入 <strong>MAIN 世界脚本</strong>（<code>main-world.js</code>）修改页面可见的浏览器属性：</p>
+
+    <table>
+      <tr><th>属性</th><th>修改后</th></tr>
+      <tr><td><code>navigator.webdriver</code></td><td><code>undefined</code></td></tr>
+      <tr><td><code>navigator.languages</code></td><td>['en-US', 'en']</td></tr>
+      <tr><td><code>navigator.platform</code></td><td>'Win32'</td></tr>
+      <tr><td><code>navigator.hardwareConcurrency</code></td><td>8</td></tr>
+      <tr><td><code>navigator.deviceMemory</code></td><td>8</td></tr>
+      <tr><td><code>navigator.plugins</code></td><td>模拟 3 个插件</td></tr>
+      <tr><td><code>navigator.userAgentData.brands</code></td><td>标准 Chrome 品牌标识</td></tr>
+      <tr><td><code>window.chrome</code></td><td>模拟存在</td></tr>
+    </table>
+
+    <div class="info-box">
+      <div class="label">💡 技术说明</div>
+      <p>内容脚本默认运行在<strong>隔离世界（Isolated World）</strong>中，页面原生 JavaScript 无法看到其修改。Access Helper 通过 <code>&lt;script src="chrome-extension://..."&gt;</code> 标签加载外部脚本文件 <code>main-world.js</code>，将代码注入 <strong>MAIN 世界</strong>，使修改对页面内所有脚本可见。此方式符合页面的 CSP 策略。</p>
+    </div>
+
+    <h3>8.4 使用方法</h3>
+
+    <ol>
+      <li>默认情况下 Access Helper 已开启（首次安装时自动启用 DNR 规则）</li>
+      <li>如需关闭，点击工具栏图标，在 Access Helper 区块关闭开关</li>
+      <li>关闭时 DNR 重定向规则被禁用</li>
+      <li>重新开启时，DNR 规则重新启用，页面也会自动刷新以确保设置生效</li>
+    </ol>
+
+    <div class="warning-box">
+      <div class="label">⚠️ 注意</div>
+      <p>Access Helper 仅用于改善正常用户的浏览体验，<strong>请勿用于任何违反 PubMed 使用条款的用途</strong>。该功能旨在帮助中国大陆用户正常访问 PubMed 资源，而非规避合法的反滥用措施。</p>
+    </div>
+
+
+
+    <!-- 9. 数据源说明 -->
+    <h2 id="data-source">9. 数据源说明</h2>
+
+    <h3>9.1 数据来源</h3>
+
+    <table>
+      <tr><th>数据文件</th><th>来源</th><th>内容</th></tr>
+      <tr>
+        <td><code>filter_data.json</code></td>
+        <td>JCR 官方数据 + CAS 分区数据</td>
+        <td>SCI 期刊列表，包含 IF、JCR、CAS 等核心数据</td>
+      </tr>
+      <tr>
+        <td><code>pubmed_abb_data.json</code></td>
+        <td>PubMed 官方数据</td>
+        <td>非 SCI 期刊列表，提供基础期刊信息</td>
+      </tr>
+      <tr>
+        <td><code>jcr_cas_ifqb.json</code></td>
+        <td>JCR 扩展数据</td>
+        <td>自引率、OA、APC、出版商等扩展信息</td>
+      </tr>
+    </table>
+
+    <h3>9.2 数据匹配</h3>
+
+    <ul>
+      <li>以期刊缩写（abbreviation）为唯一匹配键</li>
+      <li>支持带括号和不带括号的期刊名匹配</li>
+      <li>先在 SCI 期刊库中匹配，若未命中则在非 SCI 期刊库中匹配</li>
+      <li>采用精确匹配策略，确保数据准确性</li>
+    </ul>
+
+    <h3>9.3 数据更新</h3>
+
+    <p>如需更新数据，请替换以下文件：</p>
+    <ul>
+      <li><code>data/filter_data.json</code> - 核心期刊数据</li>
+      <li><code>data/jcr_cas_ifqb.json</code> - 扩展数据</li>
+      <li><code>data/pubmed_abb_data.json</code> - 非 SCI 期刊数据</li>
+    </ul>
+
+    <p>更新后刷新页面即可生效，无需重新安装插件。</p>
+
+    <!-- 10. 常见问题 -->
+    <h2 id="faq">10. 常见问题</h2>
+
+    <div class="feature-card">
+      <div class="feature-title">❓ 期刊信息没有显示怎么办？</div>
+      <p><strong>解答：</strong></p>
+      <ol>
+        <li>确认已打开 PubMed 网站（<code>pubmed.ncbi.nlm.nih.gov</code>）</li>
+        <li>刷新页面（Ctrl+F5）</li>
+        <li>检查插件是否已正确安装并启用</li>
+        <li>打开开发者工具（F12）查看 Console 是否有错误信息</li>
+        <li>确认 Access Helper 已开启</li>
+      </ol>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-title">❓ 部分期刊没有显示信息？</div>
+      <p><strong>解答：</strong></p>
+      <p>可能原因：</p>
+      <ul>
+        <li>该期刊不在数据库中（非 SCI 期刊、新收录期刊等）</li>
+        <li>期刊缩写格式不匹配</li>
+        <li>数据文件需要更新</li>
+      </ul>
+      <p>插件会为所有期刊尝试匹配，匹配失败时显示 "SCI: No" 标记。</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-title">❓ 扩展信息（自引率、OA、APC等）不显示？</div>
+      <p><strong>解答：</strong></p>
+      <ol>
+        <li>打开设置面板，确认对应选项已开启</li>
+        <li>部分期刊可能没有扩展数据（数据本身缺失）</li>
+        <li>确认使用的是最新版本的数据文件</li>
+      </ol>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-title">❓ 页面显示 "Browser Check" 或卡在验证页面？</div>
+      <p><strong>解答：</strong></p>
+      <p>这是因为 PubMed 触发了 Google reCAPTCHA 验证。Access Helper 会自动将验证请求重定向到国内可访问的 <code>recaptcha.net</code> 镜像。如果仍然出现问题：</p>
+      <ol>
+        <li>确认插件已安装且 Access Helper 功能已开启（默认开启）</li>
+        <li>打开 <code>chrome://extensions</code>，找到 JournalMetrics 并点击<strong>重新加载</strong>按钮
+          <br><span style="color:#666;font-size:12px;">（重要：修改 rules.json 后必须重新加载扩展，Chrome 才会索引新的 DNR 规则）</span>
+        </li>
+        <li>刷新 PubMed 页面（Ctrl+F5）</li>
+        <li>验证页面应从 recaptcha.net 加载，完成验证后自动返回 PubMed</li>
+        <li>如持续失败，请稍后重试或更换网络环境</li>
+      </ol>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-title">❓ Stats 按钮在哪里？</div>
+      <p><strong>解答：</strong></p>
+      <p>Stats 按钮（绿色）位于 PubMed 搜索结果页面底部。如果没有看到：</p>
+      <ul>
+        <li>向下滚动到页面底部</li>
+        <li>检查是否被其他元素遮挡</li>
+        <li>刷新页面重试</li>
+      </ul>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-title">❓ 筛选面板完全折叠了怎么办？</div>
+      <p><strong>解答：</strong></p>
+      <p>将鼠标移到页面右侧边缘，会出现 "Filter" 按钮，点击即可展开筛选面板。</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-title">❓ 如何卸载插件？</div>
+      <p><strong>解答：</strong></p>
+      <ol>
+        <li>打开 <code>chrome://extensions</code></li>
+        <li>找到 JournalMetrics</li>
+        <li>点击"移除"按钮</li>
+      </ol>
+    </div>
+
+    <!-- 11. 作者信息 -->
+    <h2 id="author">11. 作者信息</h2>
+
+    <div class="feature-card">
+      <div class="feature-title">👤 关于作者</div>
+      <table>
+        <tr><th colspan="2">基本信息</th></tr>
+        <tr><td><strong>姓名</strong></td><td>Jingle Wang（王进）</td></tr>
+        <tr><td><strong>单位</strong></td><td>苏州大学公共卫生学院</td></tr>
+        <tr><td><strong>邮箱</strong></td><td><a href="mailto:jinwang93@suda.edu.cn">jinwang93@suda.edu.cn</a></td></tr>
+        <tr><td><strong>个人网站</strong></td><td><a href="https://www.jingege.wang" target="_blank">https://www.jingege.wang</a></td></tr>
+      </table>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-title">📬 建议与反馈</div>
+      <p>如有任何建议、问题或功能需求，欢迎通过以下方式联系：</p>
+      <ul>
+        <li>📧 邮箱：<a href="mailto:jinwang93@suda.edu.cn">jinwang93@suda.edu.cn</a></li>
+        <li>🌐 反馈页面：<a href="https://www.jingege.wang/journalmetrics" target="_blank">https://www.jingege.wang/journalmetrics</a></li>
+      </ul>
+      <p>感谢您的使用与反馈！</p>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer-nav">
+      <div>JournalMetrics v1.0.2</div>
+      <div>👤 Jingle Wang（王进） · 苏州大学公共卫生学院</div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // 侧边栏切换（移动端）
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.toggle('show');
+    overlay.classList.toggle('show');
+  }
+
+  // 滚动时高亮当前章节
+  (function() {
+    const navLinks = document.querySelectorAll('#sidebarNav a');
+    const sections = Array.from(navLinks)
+      .map(link => document.querySelector(link.getAttribute('href')))
+      .filter(Boolean);
+
+    function updateActiveLink() {
+      const scrollPos = window.scrollY + 120;
+      let currentId = sections.length > 0 ? sections[0].id : '';
+
+      for (let i = 0; i < sections.length; i++) {
+        if (sections[i].offsetTop <= scrollPos) {
+          currentId = sections[i].id;
+        } else {
+          break;
+        }
+      }
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + currentId) {
+          link.classList.add('active');
+          // 确保活动项在侧边栏可视区域内
+          const sidebarInner = document.querySelector('.sidebar-inner');
+          if (sidebarInner) {
+            const linkRect = link.getBoundingClientRect();
+            const sidebarRect = sidebarInner.getBoundingClientRect();
+            if (linkRect.top < sidebarRect.top || linkRect.bottom > sidebarRect.bottom) {
+              link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
+          }
+        }
+      });
+    }
+
+    // 点击导航项后关闭移动端侧边栏
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 960) {
+          const sidebar = document.getElementById('sidebar');
+          const overlay = document.getElementById('sidebarOverlay');
+          sidebar.classList.remove('show');
+          overlay.classList.remove('show');
+        }
+      });
+    });
+
+    window.addEventListener('scroll', updateActiveLink, { passive: true });
+    window.addEventListener('load', updateActiveLink);
+    updateActiveLink();
+  })();
+</script>
+
+</body>
+</html>
