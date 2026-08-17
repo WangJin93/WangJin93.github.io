@@ -345,7 +345,33 @@
     flex-wrap: wrap;
     gap: 8px;
   }
-
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .navbar a:hover {
+            text-decoration: underline;
+        }
   /* 响应式：小屏幕 */
   @media (max-width: 960px) {
     .page-container {
@@ -405,7 +431,7 @@
     <nav class="navbar">
         <div class="navbar-content">
             <a href="index.html">← Back to Home</a>
-            <span>GCAS Documentation v1.0.0</span>
+            <span>JournalMetrics Documentation v1.0.0</span>
         </div>
     </nav
 <button class="sidebar-toggle" onclick="toggleSidebar()">☰ 目录</button>
