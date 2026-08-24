@@ -29,7 +29,7 @@
         }
         
         .navbar-content {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -47,7 +47,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 40px 30px;
             display: flex;
@@ -127,10 +127,14 @@
         
         .content {
             flex: 1;
+            min-width: 0;
+            max-width: 100%;
             background: white;
             border-radius: 12px;
             padding: 40px;
             box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
         
         .hero {
@@ -205,6 +209,8 @@
             border-radius: 8px;
             overflow-x: auto;
             margin: 15px 0;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         
         pre code {
@@ -219,6 +225,8 @@
             padding: 20px;
             margin: 20px 0;
             border-radius: 0 8px 8px 0;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         
         .function-name {
@@ -230,8 +238,11 @@
         
         table {
             width: 100%;
+            max-width: 100%;
             border-collapse: collapse;
             margin: 15px 0;
+            display: block;
+            overflow-x: auto;
         }
         
         th, td {
@@ -257,6 +268,41 @@
         
         .links a:hover {
             text-decoration: underline;
+        }
+
+        .citation-box {
+            background: #f5f3ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .citation-box a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .citation-box a:hover {
+            text-decoration: underline;
+        }
+
+        .copy-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 14px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #5a67d8;
         }
         
         @media (max-width: 900px) {
@@ -284,39 +330,40 @@
             <h3>Table of Contents</h3>
             <ul>
                 <li><a href="#introduction">1. Introduction</a></li>
-                <li><a href="#installation">2. Installation</a></li>
+                <li><a href="#citation">2. Citation</a></li>
+                <li><a href="#installation">3. Installation</a></li>
                 <li>
-                    <a href="#function-reference" class="toggle-btn">3. Function Reference</a>
+                    <a href="#function-reference" class="toggle-btn">4. Function Reference</a>
                     <ul class="submenu" id="function-submenu">
-                        <li><a href="#func-datasets_summary">3.1 datasets_summary</a></li>
-                        <li><a href="#func-get_expr_data">3.2 get_expr_data</a></li>
-                        <li><a href="#func-viz_TvsN">3.3 viz_TvsN</a></li>
-                        <li><a href="#func-data_summary">3.4 data_summary</a></li>
-                        <li><a href="#func-plot_meta_forest">3.5 plot_meta_forest</a></li>
-                        <li><a href="#func-plot_logFC_heatmap">3.6 plot_logFC_heatmap</a></li>
-                        <li><a href="#func-plot_logFC_scatter">3.7 plot_logFC_scatter</a></li>
-                        <li><a href="#func-cor_cancer_genelist">3.8 cor_cancer_genelist</a></li>
-                        <li><a href="#func-cor_gcas_drug">3.9 cor_gcas_drug</a></li>
-                        <li><a href="#func-cor_gcas_genelist">3.10 cor_gcas_genelist</a></li>
-                        <li><a href="#func-cor_gcas_TIL">3.11 cor_gcas_TIL</a></li>
-                        <li><a href="#func-viz_cor_heatmap">3.12 viz_cor_heatmap</a></li>
-                        <li><a href="#func-viz_cor_volcano">3.13 viz_cor_volcano</a></li>
-                        <li><a href="#func-viz_corplot">3.14 viz_corplot</a></li>
-                        <li><a href="#func-get_OSF_data">3.15 get_OSF_data</a></li>
-                        <li><a href="#func-DEGs_analysis">3.16 DEGs_analysis</a></li>
-                        <li><a href="#func-plot_volcano">3.17 plot_volcano</a></li>
-                        <li><a href="#func-coexpression_analysis">3.18 coexpression_analysis</a></li>
-                        <li><a href="#func-GSEA_analysis">3.19 GSEA_analysis</a></li>
-                        <li><a href="#func-get_DEGs_list">3.20 get_DEGs_list</a></li>
-                        <li><a href="#func-plot_venn">3.21 plot_venn</a></li>
-                        <li><a href="#func-RRA_analysis">3.22 RRA_analysis</a></li>
-                        <li><a href="#func-combat_datasets">3.23 combat_datasets</a></li>
-                        <li><a href="#func-merge_clinic_data">3.24 merge_clinic_data</a></li>
-                        <li><a href="#func-extract_subset">3.25 extract_subset</a></li>
+                        <li><a href="#func-datasets_summary">4.1 datasets_summary</a></li>
+                        <li><a href="#func-get_expr_data">4.2 get_expr_data</a></li>
+                        <li><a href="#func-viz_TvsN">4.3 viz_TvsN</a></li>
+                        <li><a href="#func-data_summary">4.4 data_summary</a></li>
+                        <li><a href="#func-plot_meta_forest">4.5 plot_meta_forest</a></li>
+                        <li><a href="#func-plot_logFC_heatmap">4.6 plot_logFC_heatmap</a></li>
+                        <li><a href="#func-plot_logFC_scatter">4.7 plot_logFC_scatter</a></li>
+                        <li><a href="#func-cor_cancer_genelist">4.8 cor_cancer_genelist</a></li>
+                        <li><a href="#func-cor_gcas_drug">4.9 cor_gcas_drug</a></li>
+                        <li><a href="#func-cor_gcas_genelist">4.10 cor_gcas_genelist</a></li>
+                        <li><a href="#func-cor_gcas_TIL">4.11 cor_gcas_TIL</a></li>
+                        <li><a href="#func-viz_cor_heatmap">4.12 viz_cor_heatmap</a></li>
+                        <li><a href="#func-viz_cor_volcano">4.13 viz_cor_volcano</a></li>
+                        <li><a href="#func-viz_corplot">4.14 viz_corplot</a></li>
+                        <li><a href="#func-get_OSF_data">4.15 get_OSF_data</a></li>
+                        <li><a href="#func-DEGs_analysis">4.16 DEGs_analysis</a></li>
+                        <li><a href="#func-plot_volcano">4.17 plot_volcano</a></li>
+                        <li><a href="#func-coexpression_analysis">4.18 coexpression_analysis</a></li>
+                        <li><a href="#func-GSEA_analysis">4.19 GSEA_analysis</a></li>
+                        <li><a href="#func-get_DEGs_list">4.20 get_DEGs_list</a></li>
+                        <li><a href="#func-plot_venn">4.21 plot_venn</a></li>
+                        <li><a href="#func-RRA_analysis">4.22 RRA_analysis</a></li>
+                        <li><a href="#func-combat_datasets">4.23 combat_datasets</a></li>
+                        <li><a href="#func-merge_clinic_data">4.24 merge_clinic_data</a></li>
+                        <li><a href="#func-extract_subset">4.25 extract_subset</a></li>
                     </ul>
                 </li>
-                <li><a href="#datasets">4. Datasets</a></li>
-                <li><a href="#demonstration">5. Project Demonstration</a></li>
+                <li><a href="#datasets">5. Datasets</a></li>
+                <li><a href="#demonstration">6. Project Demonstration</a></li>
             </ul>
         </aside>
         
@@ -329,6 +376,7 @@
                     <span>👤 Author: Jin Wang</span>
                     <span>📧 Maintainer: jin.wang93@outlook.com</span>
                     <span>📄 License: MIT</span>
+                    <span>📄 <a href="https://doi.org/10.3390/biom16060823" style="color: white; text-decoration: underline;">DOI: 10.3390/biom16060823</a></span>
                 </div>
             </div>
             
@@ -352,18 +400,32 @@
                     <strong>Bug Reports:</strong> <a href="https://github.com/WangJin93/GCAS/issues">https://github.com/WangJin93/GCAS/issues</a>
                 </p>
             </section>
+
+            <section id="citation">
+                <h2>2. Citation</h2>
+                <p>If you use GCAS in your research, please cite our paper:</p>
+                <div class="citation-box" id="gcas-citation">
+                    <p>
+                        Wang, J.; Wei, M.; Zhang, J.; Song, X.; Hu, Y.; Qin, L.; Liang, T.; Zhu, X.; Li, J.
+                        GCAS: An Integrated R Package and Shiny App for Comprehensive Cancer Data Analysis.
+                        <em>Biomolecules</em> 2026, 16, 823.
+                        <a href="https://doi.org/10.3390/biom16060823">https://doi.org/10.3390/biom16060823</a>
+                    </p>
+                    <button class="copy-btn" onclick="downloadRIS('gcas')">⬇️ Download RIS (EndNote)</button>
+                </div>
+            </section>
             
             <section id="installation">
-                <h2>2. Installation</h2>
+                <h2>3. Installation</h2>
                 <p>You can install GCAS from GitHub using the remotes package:</p>
                 <pre><code>remotes::install_github("WangJin93/GCAS")</code></pre>
             </section>
             
             <section id="function-reference">
-                <h2>3. Function Reference</h2>
+                <h2>4. Function Reference</h2>
                 
                 <div class="function-box" id="func-datasets_summary">
-                    <div class="function-name">3.1 datasets_summary</div>
+                    <div class="function-name">4.1 datasets_summary</div>
                     <h4>Description</h4>
                     <p>This function summarizes the sample counts and pairing status for datasets based on a specified tumor subtype.</p>
                     <h4>Usage</h4>
@@ -380,7 +442,7 @@
                 </div>
                 
                 <div class="function-box" id="func-get_expr_data">
-                    <div class="function-name">3.2 get_expr_data</div>
+                    <div class="function-name">4.2 get_expr_data</div>
                     <h4>Description</h4>
                     <p>Retrieve expression data for specified genes from given datasets.</p>
                     <h4>Usage</h4>
@@ -399,7 +461,7 @@ results <- get_expr_data(datasets = c("GSE62113","GSE74706"), genes = "GAPDH")</
                 </div>
                 
                 <div class="function-box" id="func-viz_TvsN">
-                    <div class="function-name">3.3 viz_TvsN</div>
+                    <div class="function-name">4.3 viz_TvsN</div>
                     <h4>Description</h4>
                     <p>Visualizing the different expression of mRNA expression data between Tumor and Normal tissues in GEO database.</p>
                     <h4>Usage</h4>
@@ -434,7 +496,7 @@ viz_TvsN(df_multi_set,df_type = "multi_set")</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-data_summary">
-                    <div class="function-name">3.4 data_summary</div>
+                    <div class="function-name">4.4 data_summary</div>
                     <h4>Description</h4>
                     <p>Compute summary statistics (mean, standard deviation, etc.) and perform hypothesis testing (t-test or Wilcoxon test) for gene expression data across different datasets.</p>
                     <h4>Usage</h4>
@@ -454,7 +516,7 @@ results <- data_summary(df, tumor_subtype = "LUAD")</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-plot_meta_forest">
-                    <div class="function-name">3.5 plot_meta_forest</div>
+                    <div class="function-name">4.5 plot_meta_forest</div>
                     <h4>Description</h4>
                     <p>This function performs a meta-analysis on multiple datasets and generates a forest plot. It also tests for publication bias.</p>
                     <h4>Usage</h4>
@@ -475,7 +537,7 @@ plot_meta_forest(results)</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-plot_logFC_heatmap">
-                    <div class="function-name">3.6 plot_logFC_heatmap</div>
+                    <div class="function-name">4.6 plot_logFC_heatmap</div>
                     <h4>Description</h4>
                     <p>This function generates a heatmap of log fold changes (logFC) for a gene across different datasets. It includes significance annotations based on p-values.</p>
                     <h4>Usage</h4>
@@ -496,7 +558,7 @@ print(heatmap)</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-plot_logFC_scatter">
-                    <div class="function-name">3.7 plot_logFC_scatter</div>
+                    <div class="function-name">4.7 plot_logFC_scatter</div>
                     <h4>Description</h4>
                     <p>This function generates a scatter plot of log fold changes (logFC) for a gene across different datasets. It includes significance annotations based on p-values.</p>
                     <h4>Usage</h4>
@@ -524,7 +586,7 @@ print(scatter)</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-cor_cancer_genelist">
-                    <div class="function-name">3.8 cor_cancer_genelist</div>
+                    <div class="function-name">4.8 cor_cancer_genelist</div>
                     <h4>Description</h4>
                     <p>Perform correlation analysis of the mRNA/protein expression data in CPTAC database.</p>
                     <h4>Usage</h4>
@@ -557,7 +619,7 @@ print(scatter)</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-cor_gcas_drug">
-                    <div class="function-name">3.9 cor_gcas_drug</div>
+                    <div class="function-name">4.9 cor_gcas_drug</div>
                     <h4>Description</h4>
                     <p>Calculate the correlation between target gene expression and anti-tumor drug sensitivity in multiple datasets.</p>
                     <h4>Usage</h4>
@@ -578,7 +640,7 @@ result <- cor_gcas_drug(df, Target.pathway = c("Cell cycle"))</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-cor_gcas_genelist">
-                    <div class="function-name">3.10 cor_gcas_genelist</div>
+                    <div class="function-name">4.10 cor_gcas_genelist</div>
                     <h4>Description</h4>
                     <p>Perform correlation analysis of the expression data in multiple datasets.</p>
                     <h4>Usage</h4>
@@ -609,7 +671,7 @@ result <- cor_gcas_genelist(df, geneset_data, sample_type = c("Tumor"))</code></
                 </div>
                 
                 <div class="function-box" id="func-cor_gcas_TIL">
-                    <div class="function-name">3.11 cor_gcas_TIL</div>
+                    <div class="function-name">4.11 cor_gcas_TIL</div>
                     <h4>Description</h4>
                     <p>Calculate the correlation between target gene expression and immune cells infiltration in multiple datasets.</p>
                     <h4>Usage</h4>
@@ -630,7 +692,7 @@ result <- cor_gcas_TIL(df, cor_method = "spearman", TIL_type = "TIMER")</code></
                 </div>
                 
                 <div class="function-box" id="func-viz_cor_heatmap">
-                    <div class="function-name">3.12 viz_cor_heatmap</div>
+                    <div class="function-name">4.12 viz_cor_heatmap</div>
                     <h4>Description</h4>
                     <p>Presenting correlation analysis results using heat maps based on ggplot2.</p>
                     <h4>Usage</h4>
@@ -651,7 +713,7 @@ viz_cor_heatmap(result$r, result$p)</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-viz_cor_volcano">
-                    <div class="function-name">3.13 viz_cor_volcano</div>
+                    <div class="function-name">4.13 viz_cor_volcano</div>
                     <h4>Description</h4>
                     <p>Plotting volcano plot for the correlation analysis of a specific gene from the result of cor_gcas_genelist().</p>
                     <h4>Usage</h4>
@@ -683,7 +745,7 @@ viz_cor_volcano(cor_result, "LILRB4", p.cut = 0.5, r.cut = 0.1,colors = c("blue"
                 </div>
                 
                 <div class="function-box" id="func-viz_corplot">
-                    <div class="function-name">3.14 viz_corplot</div>
+                    <div class="function-name">4.14 viz_corplot</div>
                     <h4>Description</h4>
                     <p>Scatter plot with sample size (n), correlation coefficient (r) and p-value.</p>
                     <h4>Usage</h4>
@@ -708,7 +770,7 @@ viz_cor_volcano(cor_result, "LILRB4", p.cut = 0.5, r.cut = 0.1,colors = c("blue"
                 </div>
                 
                 <div class="function-box" id="func-get_OSF_data">
-                    <div class="function-name">3.15 get_OSF_data</div>
+                    <div class="function-name">4.15 get_OSF_data</div>
                     <h4>Description</h4>
                     <p>Retrieve GEO expression datasets and sample information from the OSF repository.</p>
                     <h4>Usage</h4>
@@ -727,7 +789,7 @@ df2 <- get_OSF_data(table = "GSE74706", action = "geo_data")</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-DEGs_analysis">
-                    <div class="function-name">3.16 DEGs_analysis</div>
+                    <div class="function-name">4.16 DEGs_analysis</div>
                     <h4>Description</h4>
                     <p>Perform differential expression gene analysis on a given dataset.</p>
                     <h4>Usage</h4>
@@ -747,7 +809,7 @@ results <- DEGs_analysis(df, tumor_subtype = c("NSCLC"))</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-plot_volcano">
-                    <div class="function-name">3.17 plot_volcano</div>
+                    <div class="function-name">4.17 plot_volcano</div>
                     <h4>Description</h4>
                     <p>Plotting volcano plot for DEGs between tumor and normal samples.</p>
                     <h4>Usage</h4>
@@ -778,7 +840,7 @@ plot_volcano(results)</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-coexpression_analysis">
-                    <div class="function-name">3.18 coexpression_analysis</div>
+                    <div class="function-name">4.18 coexpression_analysis</div>
                     <h4>Description</h4>
                     <p>This function calculates the correlation between a given gene and all other genes in the provided expression matrix.</p>
                     <h4>Usage</h4>
@@ -799,7 +861,7 @@ print(results)</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-GSEA_analysis">
-                    <div class="function-name">3.19 GSEA_analysis</div>
+                    <div class="function-name">4.19 GSEA_analysis</div>
                     <h4>Description</h4>
                     <p>This function performs Gene Set Enrichment Analysis (GSEA) based on either correlation results or limma differential analysis results.</p>
                     <h4>Usage</h4>
@@ -824,7 +886,7 @@ gsea_result <- GSEA_analysis(results,  gmt_file = BP_GMT_7.5.1)</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-get_DEGs_list">
-                    <div class="function-name">3.20 get_DEGs_list</div>
+                    <div class="function-name">4.20 get_DEGs_list</div>
                     <h4>Description</h4>
                     <p>Extract significantly upregulated and downregulated genes from multiple DEG analysis results.</p>
                     <h4>Usage</h4>
@@ -848,7 +910,7 @@ results <- get_DEGs_list(DEGs_lists)</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-plot_venn">
-                    <div class="function-name">3.21 plot_venn</div>
+                    <div class="function-name">4.21 plot_venn</div>
                     <h4>Description</h4>
                     <p>This function plots a Venn diagram for lists of differentially expressed genes (DEGs) across multiple datasets.</p>
                     <h4>Usage</h4>
@@ -876,7 +938,7 @@ plot_venn(results$DEG.up, fill_colors = c("red", "green", "blue"), alpha = 0.5, 
                 </div>
                 
                 <div class="function-box" id="func-RRA_analysis">
-                    <div class="function-name">3.22 RRA_analysis</div>
+                    <div class="function-name">4.22 RRA_analysis</div>
                     <h4>Description</h4>
                     <p>This function performs RRA analysis on differentially expressed genes (DEGs) lists obtained from various studies. It ranks genes based on their differential expression and aggregates the ranks to identify consistently regulated genes across studies.</p>
                     <h4>Usage</h4>
@@ -909,7 +971,7 @@ ComplexHeatmap::pheatmap(RRA_results$RRA_results)</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-combat_datasets">
-                    <div class="function-name">3.23 combat_datasets</div>
+                    <div class="function-name">4.23 combat_datasets</div>
                     <h4>Description</h4>
                     <p>This function performs batch correction on multiple datasets using the ComBat function from the sva package.</p>
                     <h4>Usage</h4>
@@ -930,7 +992,7 @@ sample_info <- result$sample_info</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-merge_clinic_data">
-                    <div class="function-name">3.24 merge_clinic_data</div>
+                    <div class="function-name">4.24 merge_clinic_data</div>
                     <h4>Description</h4>
                     <p>Get sample_info data and merge it with expression data.</p>
                     <h4>Usage</h4>
@@ -949,7 +1011,7 @@ results <- merge_clinic_data("GSE19188",data_input)</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-extract_subset">
-                    <div class="function-name">3.25 extract_subset</div>
+                    <div class="function-name">4.25 extract_subset</div>
                     <h4>Description</h4>
                     <p>This function searches for specified names within a nested list structure and extracts the names of found subsets.</p>
                     <h4>Usage</h4>
@@ -978,44 +1040,44 @@ print(result)</code></pre>
             </section>
             
             <section id="datasets">
-                <h2>4. Datasets</h2>
+                <h2>5. Datasets</h2>
                 
-                <h3>4.1 dataset_info</h3>
+                <h3>5.1 dataset_info</h3>
                 <p>Summary of the general informations of the GEO datasets in this tool.</p>
                 <pre><code>data("dataset_info")</code></pre>
                 <p><strong>Format:</strong> A data frame with 288 observations on the following 6 variables.</p>
                 
-                <h3>4.2 abbr_full</h3>
+                <h3>5.2 abbr_full</h3>
                 <p>The full name of tumor abbreviation.</p>
                 <pre><code>data("abbr_full")</code></pre>
                 <p><strong>Format:</strong> A data frame with 132 observations on the following 3 variables.</p>
                 
-                <h3>4.3 Subtype</h3>
+                <h3>5.3 Subtype</h3>
                 <p>Subtype list of all cancer types.</p>
                 <pre><code>data("subtype")</code></pre>
                 <p><strong>Format:</strong> List of 21.</p>
                 
-                <h3>4.4 TIL_map</h3>
+                <h3>5.4 TIL_map</h3>
                 <p>Mapping of immune cell types and algorithms.</p>
                 <pre><code>data("TIL_map")</code></pre>
                 
-                <h3>4.5 sample_subtype</h3>
+                <h3>5.5 sample_subtype</h3>
                 <p>Subtype information of all samples.</p>
                 
-                <h3>4.6 GCAS_TIL</h3>
+                <h3>5.6 GCAS_TIL</h3>
                 <p>Immune cell infiltration score of all samples calculated based on IOBR package.</p>
                 
-                <h3>4.7 GCAS_drug</h3>
+                <h3>5.7 GCAS_drug</h3>
                 <p>Anti-tumor drug sensitivity of all samples calculated based on oncoPredict package and GDSC database.</p>
                 
-                <h3>4.8 drug_info</h3>
+                <h3>5.8 drug_info</h3>
                 <p>Anti-tumor drugs informations obtained from GDSC2.0 datasets.</p>
             </section>
             
             <section id="demonstration">
-                <h2>5. Project Demonstration</h2>
+                <h2>6. Project Demonstration</h2>
                 
-                <h3>5.1 Expression and correlation analysis of GAPDH in lung cancer dataset GSE19188</h3>
+                <h3>6.1 Expression and correlation analysis of GAPDH in lung cancer dataset GSE19188</h3>
                 <pre><code>library(GCAS)
 # 1. expression analysis
 df_single <- get_expr_data(datasets = "GSE19188",genes = c("TP53"))
@@ -1043,7 +1105,7 @@ viz_corplot(results$cor_data,
             "FOXM1")
 </code></pre>
 
-                <h3>5.2 Expression and correlation analysis of GAPDH in multiple lung cancer datasets</h3>
+                <h3>6.2 Expression and correlation analysis of GAPDH in multiple lung cancer datasets</h3>
                 <pre><code>library(GCAS)
 df_multi_set <- get_expr_data(datasets = c("GSE27262","GSE7670","GSE19188","GSE19804","GSE30219","GSE31210","GSE32665","GSE32863","GSE43458","GSE46539","GSE75037","GSE10072","GSE74706","GSE18842","GSE62113"), genes = "GAPDH")
 viz_TvsN(df_multi_set,df_type = "multi_set")
@@ -1052,7 +1114,7 @@ results <- data_summary(df_multi_set, tumor_subtype = "LUAD")
 plot_meta_forest(results)
 </code></pre>
 
-                <h3>5.3 Differential expression gene analysis and co-expression analysis based on GSE19188 dataset</h3>
+                <h3>6.3 Differential expression gene analysis and co-expression analysis based on GSE19188 dataset</h3>
                 <pre><code>df <- get_OSF_data(table = "GSE19188", action = "geo_data")
 results <- DEGs_analysis(df, tumor_subtype = c("NSCLC"))
 plot_volcano(results)
@@ -1070,6 +1132,58 @@ results <- coexpression_analysis(df, "GAPDH")
             this.classList.toggle('expanded');
             document.getElementById('function-submenu').classList.toggle('show');
         });
+
+        // RIS citation data map
+        const RIS_DATA = {
+            gcas: {
+                filename: 'GCAS_Wang_Biomolecules_2026.ris',
+                content: `TY  - JOUR
+AU  - Wang, Jin
+AU  - Wei, Min
+AU  - Zhang, Jin
+AU  - Song, Xiaoyu
+AU  - Hu, Yang
+AU  - Qin, Linyuan
+AU  - Liang, Tao
+AU  - Zhu, Xudong
+AU  - Li, Jing
+TI  - GCAS: An Integrated R Package and Shiny App for Comprehensive Cancer Data Analysis
+JO  - Biomolecules
+T2  - Biomolecules
+PY  - 2026
+VL  - 16
+IS  - 6
+SP  - 823
+EP  - 823
+DO  - 10.3390/biom16060823
+UR  - https://doi.org/10.3390/biom16060823
+ER  - 
+`
+            }
+        };
+
+        // Download RIS file for EndNote
+        function downloadRIS(key) {
+            const data = RIS_DATA[key];
+            if (!data) { alert('RIS data not found.'); return; }
+            const blob = new Blob([data.content], { type: 'application/x-research-info-systems;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = data.filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            const btn = event.target;
+            const original = btn.innerText;
+            btn.innerText = '✓ Downloaded!';
+            btn.style.background = '#27ae60';
+            setTimeout(() => {
+                btn.innerText = original;
+                btn.style.background = '';
+            }, 2000);
+        }
     </script>
 </body>
 </html>

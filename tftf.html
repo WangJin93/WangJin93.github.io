@@ -29,7 +29,7 @@
         }
         
         .navbar-content {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -47,7 +47,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 40px 30px;
             display: flex;
@@ -127,10 +127,14 @@
         
         .content {
             flex: 1;
+            min-width: 0;
+            max-width: 100%;
             background: white;
             border-radius: 12px;
             padding: 40px;
             box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
         
         .hero {
@@ -210,6 +214,8 @@
             border-radius: 8px;
             overflow-x: auto;
             margin: 15px 0;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         
         pre code {
@@ -220,8 +226,11 @@
         
         table {
             width: 100%;
+            max-width: 100%;
             border-collapse: collapse;
             margin: 15px 0;
+            display: block;
+            overflow-x: auto;
         }
         
         th, td {
@@ -255,6 +264,8 @@
             padding: 20px;
             margin: 20px 0;
             border-radius: 0 8px 8px 0;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         
         .feature-list {
@@ -274,6 +285,41 @@
             font-weight: bold;
             position: absolute;
             left: 0;
+        }
+        
+        .citation-box {
+            background: #fff5f5;
+            border-left: 4px solid #e74c3c;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .citation-box a {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+
+        .citation-box a:hover {
+            text-decoration: underline;
+        }
+
+        .copy-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 14px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #c0392b;
         }
         
         @media (max-width: 900px) {
@@ -301,22 +347,23 @@
             <h3>Table of Contents</h3>
             <ul>
                 <li><a href="#introduction">1. Introduction</a></li>
-                <li><a href="#online-tools">2. Related Online Tools</a></li>
-                <li><a href="#data-source">3. Data Source</a></li>
-                <li><a href="#algorithm">4. Algorithm</a></li>
-                <li><a href="#installation">5. Installation</a></li>
+                <li><a href="#citation">2. Citation</a></li>
+                <li><a href="#online-tools">3. Related Online Tools</a></li>
+                <li><a href="#data-source">4. Data Source</a></li>
+                <li><a href="#algorithm">5. Algorithm</a></li>
+                <li><a href="#installation">6. Installation</a></li>
                 <li>
-                    <a href="#functions" class="toggle-btn">6. Functions</a>
+                    <a href="#functions" class="toggle-btn">7. Functions</a>
                     <ul class="submenu" id="function-submenu">
-                        <li><a href="#func-predict_target">6.1 predict_target</a></li>
-                        <li><a href="#func-predict_TF">6.2 predict_TF</a></li>
-                        <li><a href="#func-intersections">6.3 intersections</a></li>
-                        <li><a href="#func-plot_venn">6.4 plot_venn</a></li>
-                        <li><a href="#func-pantissue_cor_analysis">6.5 pantissue_cor_analysis</a></li>
-                        <li><a href="#func-viz_cor_results">6.6 viz_cor_results</a></li>
+                        <li><a href="#func-predict_target">7.1 predict_target</a></li>
+                        <li><a href="#func-predict_TF">7.2 predict_TF</a></li>
+                        <li><a href="#func-intersections">7.3 intersections</a></li>
+                        <li><a href="#func-plot_venn">7.4 plot_venn</a></li>
+                        <li><a href="#func-pantissue_cor_analysis">7.5 pantissue_cor_analysis</a></li>
+                        <li><a href="#func-viz_cor_results">7.6 viz_cor_results</a></li>
                     </ul>
                 </li>
-                <li><a href="#shiny-app">7. Shiny App</a></li>
+                <li><a href="#shiny-app">8. Shiny App</a></li>
             </ul>
         </aside>
         
@@ -329,6 +376,7 @@
                     <span>👤 Author: Jin Wang</span>
                     <span>📧 <a href="mailto:jin.wang93@outlook.com">jin.wang93@outlook.com</a></span>
                     <span>🌐 <a href="https://www.jingege.wang">Website</a></span>
+                    <span>📄 <a href="https://doi.org/10.3390/biom14070749" style="color: white; text-decoration: underline;">DOI: 10.3390/biom14070749</a></span>
                 </div>
             </div>
             
@@ -358,9 +406,22 @@
                     <strong>Documentation:</strong> <a href="https://www.jingege.wang/tf-target-finder-an-r-web-application-and-package-bridging-multiple-predictive-models-for-decoding-transcription-fac-tor-target-interactions/">https://www.jingege.wang</a>
                 </p>
             </section>
+
+            <section id="citation">
+                <h2>2. Citation</h2>
+                <p>If you use TFTF in your research, please cite our paper:</p>
+                <div class="citation-box" id="tftf-citation">
+                    <p>
+                        Wang J. TFTF: An R-Based Integrative Tool for Decoding Human Transcription Factor–Target Interactions.
+                        <em>Biomolecules</em>. 2024; 14(7):749.
+                        <a href="https://doi.org/10.3390/biom14070749">https://doi.org/10.3390/biom14070749</a>
+                    </p>
+                    <button class="copy-btn" onclick="downloadRIS('tftf')">⬇️ Download RIS (EndNote)</button>
+                </div>
+            </section>
             
             <section id="online-tools">
-                <h2>2. Related Online Tools and Database Information</h2>
+                <h2>3. Related Online Tools and Database Information</h2>
                 <p>TFTF integrates data from the following authoritative transcription factor databases and tools:</p>
                 
                 <table>
@@ -416,7 +477,7 @@
             </section>
             
             <section id="data-source">
-                <h2>3. Data Source</h2>
+                <h2>4. Data Source</h2>
                 <p>TFTF retrieves data from the following sources for transcription factor target prediction and correlation analysis:</p>
                 
                 <table>
@@ -472,15 +533,15 @@
             </section>
             
             <section id="algorithm">
-                <h2>4. Algorithm for Predicting Transcription Factor Target Genes Based on Motif</h2>
+                <h2>5. Algorithm for Predicting Transcription Factor Target Genes Based on Motif</h2>
                 
-                <h3>4.1 FIMO</h3>
+                <h3>5.1 FIMO</h3>
                 <p>
                     <strong>FIMO</strong> (Find Individual Motif Occurrences) is a tool used to identify individual motif occurrences 
                     within DNA sequences, enabling the recognition of transcription factor binding sites and other functional DNA elements.
                 </p>
                 
-                <h3>4.2 PWMEnrich</h3>
+                <h3>5.2 PWMEnrich</h3>
                 <p>
                     <a href="https://bioconductor.org/packages/release/bioc/html/PWMEnrich.html"><strong>PWMEnrich</strong></a> 
                     (Position Weight Matrix Enrichment Analysis) is an R package for analyzing the enrichment of features such as 
@@ -490,25 +551,25 @@
             </section>
             
             <section id="installation">
-                <h2>5. Installation</h2>
+                <h2>6. Installation</h2>
                 <p>Install TFTF from GitHub:</p>
                 <pre><code>devtools::install_github("WangJin93/TFTF")</code></pre>
                 
-                <h3>5.1 Built-in Data</h3>
+                <h3>6.1 Built-in Data</h3>
                 <p>View the list of transcription factors included in this R package:</p>
                 <pre><code>tf_list</code></pre>
                 <p><strong>Note:</strong> We only include transcription factors that are present in at least 2 datasets out of nine, resulting in a total of <strong>1575 transcription factors</strong>.</p>
                 
-                <h3>5.2 Tissue Types</h3>
+                <h3>6.2 Tissue Types</h3>
                 <p>View correlation analysis organization types:</p>
                 <pre><code>tissue</code></pre>
             </section>
             
             <section id="functions">
-                <h2>6. Function Reference</h2>
+                <h2>7. Function Reference</h2>
                 
                 <div class="module-box" id="func-predict_target">
-                    <h3>6.1 predict_target</h3>
+                    <h3>7.1 predict_target</h3>
                     <h4>Description</h4>
                     <p>Predict the target genes of Transcription Factor in multiple TF-target prediction databases and correlation analysis.</p>
                     <h4>Usage</h4>
@@ -543,7 +604,7 @@
                 </div>
                 
                 <div class="module-box" id="func-predict_TF">
-                    <h3>6.2 predict_TF</h3>
+                    <h3>7.2 predict_TF</h3>
                     <h4>Description</h4>
                     <p>Predict the upstream Transcription Factors regulating user inputted gene in multiple TF-target prediction databases and correlation analysis.</p>
                     <h4>Usage</h4>
@@ -570,7 +631,7 @@
                 </div>
                 
                 <div class="module-box" id="func-intersections">
-                    <h3>6.3 intersections</h3>
+                    <h3>7.3 intersections</h3>
                     <h4>Description</h4>
                     <p>Intersection analysis of prediction results from multiple databases.</p>
                     <h4>Usage</h4>
@@ -582,7 +643,7 @@ results_inter <- intersections(results)</code></pre>
                 </div>
                 
                 <div class="module-box" id="func-plot_venn">
-                    <h3>6.4 plot_venn</h3>
+                    <h3>7.4 plot_venn</h3>
                     <h4>Description</h4>
                     <p>Visualization of intersection analysis results using Venn or petal diagrams.</p>
                     <h4>Usage</h4>
@@ -590,7 +651,7 @@ results_inter <- intersections(results)</code></pre>
                 </div>
                 
                 <div class="module-box" id="func-pantissue_cor_analysis">
-                    <h3>6.5 pantissue_cor_analysis</h3>
+                    <h3>7.5 pantissue_cor_analysis</h3>
                     <h4>Description</h4>
                     <p>Correlation analysis between TF and target gene in pan-tissue in "TCGA", "GTEx" or "CCLE" databases.</p>
                     <h4>Usage</h4>
@@ -613,7 +674,7 @@ results_inter <- intersections(results)</code></pre>
                 </div>
                 
                 <div class="module-box" id="func-viz_cor_results">
-                    <h3>6.6 viz_cor_results</h3>
+                    <h3>7.6 viz_cor_results</h3>
                     <h4>Description</h4>
                     <p>Visualization of pan-tissue correlation analysis using ggplot2.</p>
                     <h4>Usage</h4>
@@ -628,14 +689,14 @@ results_inter <- intersections(results)</code></pre>
             </section>
             
             <section id="shiny-app">
-                <h2>7. Shiny App Introduction</h2>
+                <h2>8. Shiny App Introduction</h2>
                 <p>The R package has a built-in Shiny app that can implement all the functions of the R package. Required packages: shiny, DT, graph, ggraph, shinyWidgets, bs4Dash, tidygraph.</p>
                 
-                <h3>7.1 Launch the App</h3>
+                <h3>8.1 Launch the App</h3>
                 <pre><code>TFTF_app()</code></pre>
                 <p>Or access the app online: <a href="https://jingle.shinyapps.io/TF_Target_Finder/">https://jingle.shinyapps.io/TF_Target_Finder/</a></p>
                 
-                <h3>7.2 Module 1: Prediction of Target Genes of TF</h3>
+                <h3>8.2 Module 1: Prediction of Target Genes of TF</h3>
                 <p>This systematic approach enables a thorough analysis of TF-target gene interactions. The procedural steps are:</p>
                 <ul class="feature-list">
                     <li><strong>Input a TF name:</strong> Select a TF of interest from a dropdown list</li>
@@ -646,7 +707,7 @@ results_inter <- intersections(results)</code></pre>
                     <li><strong>Visualize intersections:</strong> View Venn or petal diagrams</li>
                 </ul>
                 
-                <h3>7.3 Module 2: Prediction of Upstream TFs of Target Genes</h3>
+                <h3>8.3 Module 2: Prediction of Upstream TFs of Target Genes</h3>
                 <p>Similar to Module 1, but predicts upstream TFs for a given target gene:</p>
                 <ul class="feature-list">
                     <li><strong>Input a target gene symbol:</strong> Such as GAPDH</li>
@@ -655,7 +716,7 @@ results_inter <- intersections(results)</code></pre>
                     <li><strong>Results:</strong> View and download detailed information for each tool's predictions</li>
                 </ul>
                 
-                <h3>7.4 Module 3: Pan-tissue Correlation Analysis</h3>
+                <h3>8.4 Module 3: Pan-tissue Correlation Analysis</h3>
                 <p>Analyze expression correlation of TF-target pairs across various tissue types:</p>
                 <ul class="feature-list">
                     <li><strong>TF and target gene input:</strong> Select a transcription factor and enter the target gene</li>
@@ -665,7 +726,7 @@ results_inter <- intersections(results)</code></pre>
                     <li><strong>Detailed plots:</strong> Click on results to view detailed scatter plots</li>
                 </ul>
                 
-                <h3>7.5 Module 4: TF-targets Regulation Network Analysis</h3>
+                <h3>8.5 Module 4: TF-targets Regulation Network Analysis</h3>
                 <p>Predict target genes based on user-uploaded differential expression results and visualize regulatory networks:</p>
                 <ul class="feature-list">
                     <li><strong>Data upload:</strong> Upload gene differential expression analysis results</li>
@@ -683,6 +744,50 @@ results_inter <- intersections(results)</code></pre>
             this.classList.toggle('expanded');
             document.getElementById('function-submenu').classList.toggle('show');
         });
+
+        // RIS citation data map
+        const RIS_DATA = {
+            tftf: {
+                filename: 'TFTF_Wang_Biomolecules_2024.ris',
+                content: `TY  - JOUR
+AU  - Wang, Jin
+TI  - TFTF: An R-Based Integrative Tool for Decoding Human Transcription Factor-Target Interactions
+JO  - Biomolecules
+T2  - Biomolecules
+PY  - 2024
+VL  - 14
+IS  - 7
+SP  - 749
+EP  - 749
+DO  - 10.3390/biom14070749
+UR  - https://doi.org/10.3390/biom14070749
+ER  - 
+`
+            }
+        };
+
+        // Download RIS file for EndNote
+        function downloadRIS(key) {
+            const data = RIS_DATA[key];
+            if (!data) { alert('RIS data not found.'); return; }
+            const blob = new Blob([data.content], { type: 'application/x-research-info-systems;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = data.filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            const btn = event.target;
+            const original = btn.innerText;
+            btn.innerText = '✓ Downloaded!';
+            btn.style.background = '#27ae60';
+            setTimeout(() => {
+                btn.innerText = original;
+                btn.style.background = '';
+            }, 2000);
+        }
     </script>
 </body>
 </html>

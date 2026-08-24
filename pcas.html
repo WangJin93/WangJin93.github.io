@@ -29,7 +29,7 @@
         }
         
         .navbar-content {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -47,7 +47,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 40px 30px;
             display: flex;
@@ -127,10 +127,14 @@
         
         .content {
             flex: 1;
+            min-width: 0;
+            max-width: 100%;
             background: white;
             border-radius: 12px;
             padding: 40px;
             box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
         
         .hero {
@@ -205,6 +209,8 @@
             border-radius: 8px;
             overflow-x: auto;
             margin: 15px 0;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         
         pre code {
@@ -219,6 +225,8 @@
             padding: 20px;
             margin: 20px 0;
             border-radius: 0 8px 8px 0;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         
         .function-name {
@@ -230,8 +238,11 @@
         
         table {
             width: 100%;
+            max-width: 100%;
             border-collapse: collapse;
             margin: 15px 0;
+            display: block;
+            overflow-x: auto;
         }
         
         th, td {
@@ -260,11 +271,38 @@
         }
         
         .citation-box {
-            background: #ecf0f1;
+            background: #f0f7fc;
+            border-left: 4px solid #3498db;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 0 8px 8px 0;
             margin: 20px 0;
             font-style: italic;
+        }
+
+        .citation-box a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .citation-box a:hover {
+            text-decoration: underline;
+        }
+
+        .copy-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 14px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #2980b9;
         }
         
         @media (max-width: 900px) {
@@ -324,6 +362,7 @@
                     <span>👤 Author: Jin Wang</span>
                     <span>📧 Maintainer: jin.wang93@outlook.com</span>
                     <span>📅 Date: 2024-06-19</span>
+                    <span>📄 <a href="https://doi.org/10.3390/ijms25126690" style="color: white; text-decoration: underline;">DOI: 10.3390/ijms25126690</a></span>
                 </div>
             </div>
             
@@ -368,14 +407,16 @@ PCAS_app()</code></pre>
             
             <section id="citation">
                 <h2>3. Citation</h2>
-                <div class="citation-box">
+                <p>If you use PCAS in your research, please cite our paper:</p>
+                <div class="citation-box" id="pcas-citation">
                     <p>
-                        Wang J, Song X, Wei M, Qin L, Zhu Q, Wang S, Liang T, Hu W, Zhu X, Li J. 
-                        PCAS: An Integrated Tool for Multi-Dimensional Cancer Research Utilizing Clinical Proteomic 
-                        Tumor Analysis Consortium Data. <em>International Journal of Molecular Sciences</em>. 
-                        2024; 25(12):6690. 
+                        Wang J, Song X, Wei M, Qin L, Zhu Q, Wang S, Liang T, Hu W, Zhu X, Li J.
+                        PCAS: An Integrated Tool for Multi-Dimensional Cancer Research Utilizing Clinical Proteomic
+                        Tumor Analysis Consortium Data. <em>International Journal of Molecular Sciences</em>.
+                        2024; 25(12):6690.
                         <a href="https://doi.org/10.3390/ijms25126690">https://doi.org/10.3390/ijms25126690</a>
                     </p>
+                    <button class="copy-btn" onclick="downloadRIS('pcas')">⬇️ Download RIS (EndNote)</button>
                 </div>
             </section>
             
@@ -691,6 +732,59 @@ viz_phoso_sites(gene = "YTHDC2", phoso_infoDB = "UniProt")</code></pre>
             this.classList.toggle('expanded');
             document.getElementById('function-submenu').classList.toggle('show');
         });
+
+        // RIS citation data map
+        const RIS_DATA = {
+            pcas: {
+                filename: 'PCAS_Wang_IJMS_2024.ris',
+                content: `TY  - JOUR
+AU  - Wang, Jin
+AU  - Song, Xiaoyu
+AU  - Wei, Min
+AU  - Qin, Linyuan
+AU  - Zhu, Qing
+AU  - Wang, Shaokang
+AU  - Liang, Tao
+AU  - Hu, Wei
+AU  - Zhu, Xudong
+AU  - Li, Jing
+TI  - PCAS: An Integrated Tool for Multi-Dimensional Cancer Research Utilizing Clinical Proteomic Tumor Analysis Consortium Data
+JO  - International Journal of Molecular Sciences
+T2  - Int. J. Mol. Sci.
+PY  - 2024
+VL  - 25
+IS  - 12
+SP  - 6690
+EP  - 6690
+DO  - 10.3390/ijms25126690
+UR  - https://doi.org/10.3390/ijms25126690
+ER  - 
+`
+            }
+        };
+
+        // Download RIS file for EndNote
+        function downloadRIS(key) {
+            const data = RIS_DATA[key];
+            if (!data) { alert('RIS data not found.'); return; }
+            const blob = new Blob([data.content], { type: 'application/x-research-info-systems;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = data.filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            const btn = event.target;
+            const original = btn.innerText;
+            btn.innerText = '✓ Downloaded!';
+            btn.style.background = '#27ae60';
+            setTimeout(() => {
+                btn.innerText = original;
+                btn.style.background = '';
+            }, 2000);
+        }
     </script>
 </body>
 </html>
