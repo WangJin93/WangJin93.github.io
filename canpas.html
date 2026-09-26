@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CanPAS - Cancer Prognosis Analysis Suite Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            display: flex;
+            gap: 40px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        
+        .sidebar h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+        }
+        
+        .sidebar ul li {
+            margin-bottom: 8px;
+        }
+        
+        .sidebar ul li a {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 6px 10px;
+            display: block;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .sidebar ul li a:hover {
+            background: #3498db;
+            color: white;
+        }
+        
+        .sidebar .toggle-btn {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar .toggle-btn::after {
+            content: '▶';
+            font-size: 0.7rem;
+            transition: transform 0.2s;
+        }
+        
+        .sidebar .toggle-btn.expanded::after {
+            transform: rotate(90deg);
+        }
+        
+        .sidebar .submenu {
+            margin-left: 15px;
+            display: none;
+            border-left: 2px solid #eee;
+            padding-left: 10px;
+            margin-top: 5px;
+        }
+        
+        .sidebar .submenu.show {
+            display: block;
+        }
+        
+        .sidebar .submenu li a {
+            font-size: 0.85rem;
+            padding: 4px 8px;
+        }
+        
+        .content {
+            flex: 1;
+            min-width: 0;
+            max-width: 100%;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .hero-meta {
+            margin-top: 20px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .hero-meta span {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px;
+            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
+            color: #555;
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+            margin: 20px 0 10px;
+            color: #3498db;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        code {
+            background: #f5f7fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .function-box {
+            background: #f9fafc;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .function-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        
+        table {
+            width: 100%;
+            max-width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            display: block;
+            overflow-x: auto;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: 500;
+        }
+        
+        tr:hover {
+            background: #f5f7fa;
+        }
+        
+        .links a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        .citation-box {
+            background: #f0f7fc;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .citation-box a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .citation-box a:hover {
+            text-decoration: underline;
+        }
+
+        .copy-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 14px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #2980b9;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="index.html">← Back to Home</a>
+            <span>CanPAS Documentation v1.0.0</span>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Table of Contents</h3>
+            <ul>
+                <li><a href="#introduction">1. Introduction</a></li>
+                <li><a href="#installation">2. Installation</a></li>
+                <li><a href="#citation">3. Citation</a></li>
+                <li>
+                    <a href="#function-reference" class="toggle-btn">4. Function Reference</a>
+                    <ul class="submenu" id="function-submenu">
+                        <li><a href="#func-get_data">4.1 get_data</a></li>
+                        <li><a href="#func-get_expr_data">4.2 get_expr_data</a></li>
+                        <li><a href="#func-merge_surv_expr">4.3 merge_surv_expr</a></li>
+                        <li><a href="#func-endpoint_resolve">4.4 endpoint_resolve</a></li>
+                        <li><a href="#func-endpoint_options">4.5 endpoint_options</a></li>
+                        <li><a href="#func-COX_by_genes">4.6 COX_by_genes</a></li>
+                        <li><a href="#func-COX_analysis">4.7 COX_analysis</a></li>
+                        <li><a href="#func-quick_km">4.8 quick_km</a></li>
+                        <li><a href="#func-get_signature_value">4.9 get_signature_value</a></li>
+                        <li><a href="#func-cpas_meta">4.10 cpas_meta</a></li>
+                        <li><a href="#func-plot_meta_forest">4.11 plot_meta_forest</a></li>
+                        <li><a href="#func-cpas_km_pooled">4.12 cpas_km_pooled</a></li>
+                        <li><a href="#func-plot_cpas_km_perdataset">4.13 plot_cpas_km_perdataset</a></li>
+                        <li><a href="#func-run_cpas_app">4.14 run_cpas_app</a></li>
+                    </ul>
+                </li>
+                <li><a href="#shiny-application">5. Shiny Application</a></li>
+                <li><a href="#data-sources">6. Data Sources &amp; API</a></li>
+                <li><a href="#verification">7. Verification &amp; Reproducibility</a></li>
+            </ul>
+        </aside>
+        
+        <main class="content">
+            <div class="hero">
+                <h1>CanPAS - Cancer Prognosis Analysis Suite</h1>
+                <p>A curated cross-archive resource and R toolkit for survival analysis of public cancer cohorts.</p>
+                <div class="hero-meta">
+                    <span>📦 Version: 1.0.0</span>
+                    <span>👤 Author: Jin Wang</span>
+                    <span>📧 Maintainer: jin.wang93@outlook.com</span>
+                    <span>📅 Date: 2026-09-26</span>
+                </div>
+            </div>
+            
+            <section id="introduction">
+                <h2>1. Introduction</h2>
+                <p>
+                    CanPAS (Cancer Prognosis Analysis Suite) is an R package and a curated data resource for
+                    survival analysis of public cancer cohorts. It serves expression matrices and harmonised
+                    survival tables from a curated GEO / EMBL-EBI / TCGA / CGGA / cBioPortal-hosted mirror over a
+                    public REST API, and from TCGA through UCSC Xena with local clinical tables, exposing one
+                    uniform "merged data" schema.
+                </p>
+                <p>
+                    Endpoints are requested by family (OS, DSS, DFS, PFS, MFS), and the token a cohort actually
+                    reports is resolved per cohort and returned with every result, so cohorts are never pooled
+                    across families. Functions cover gene and signature scoring, Kaplan-Meier and cut-point
+                    analysis, univariable and multivariable Cox models, time-dependent ROC, cross-cohort
+                    random-effects meta-analysis, pooled Kaplan-Meier with a prediction interval, and competing
+                    risks, with five statistical safeguards disclosed by default. A bundled Shiny application
+                    drives the same exported functions.
+                </p>
+                <h3>Features</h3>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>197 curated cohorts, 29 cancer types and 38,981 analysable samples behind one uniform schema</li>
+                    <li>Endpoint-family harmonisation: RFS/DFI/EFS pooled as DFS, PFI as PFS, DRFS as MFS, CSS/BCSS as DSS</li>
+                    <li>Expression table + harmonised survival table per cohort (time in years, status 0/1), plus clinical covariates where available</li>
+                    <li>Gene and weighted signature scoring, Kaplan-Meier and cut-point analysis</li>
+                    <li>Univariable / multivariable Cox models, panel screening and cross-dataset Cox</li>
+                    <li>Time-dependent ROC, cross-cohort random-effects meta-analysis and pooled Kaplan-Meier</li>
+                    <li>Competing-risks Cox models and cumulative incidence curves</li>
+                    <li>Bundled Shiny application covering the same exported functions</li>
+                </ul>
+                <h3>Data Sources</h3>
+                <table>
+                    <tr><th>Source archive</th><th>Cohorts</th></tr>
+                    <tr><td>GEO</td><td>145</td></tr>
+                    <tr><td>EMBL-EBI</td><td>14</td></tr>
+                    <tr><td>TCGA</td><td>33</td></tr>
+                    <tr><td>CGGA</td><td>3</td></tr>
+                    <tr><td>cBioPortal-hosted</td><td>2</td></tr>
+                    <tr><td><strong>Total</strong></td><td><strong>197</strong></td></tr>
+                </table>
+                <h3>Endpoint Families</h3>
+                <table>
+                    <tr><th>Family</th><th>Cohorts</th><th>Tokens pooled into the family</th></tr>
+                    <tr><td>OS</td><td>142</td><td>OS</td></tr>
+                    <tr><td>DSS</td><td>41</td><td>DSS, CSS, BCSS</td></tr>
+                    <tr><td>DFS</td><td>98</td><td>DFS, RFS, DFI, EFS</td></tr>
+                    <tr><td>PFS</td><td>49</td><td>PFS, PFI</td></tr>
+                    <tr><td>MFS</td><td>17</td><td>MFS, DRFS</td></tr>
+                </table>
+                <p>
+                    Because the token a cohort actually reports is mapped to its pooling family, cohorts that
+                    report different tokens can be pooled within a family: a cohort contributing RFS and a cohort
+                    contributing DFI both enter a DFS analysis, while OS, DSS, DFS, PFS and MFS are never mixed.
+                </p>
+                <h3>Dependencies</h3>
+                <p><strong>Imports:</strong> dplyr, ggplot2, ggtext, gridExtra, jsonlite, survival, survminer, survivalROC</p>
+                <p class="links">
+                    <strong>GitHub:</strong> <a href="https://github.com/WangJin93/CanPAS">https://github.com/WangJin93/CanPAS</a><br>
+                    <strong>Data API:</strong> <a href="https://www.jingege.wang/bioinformatics/CPAS/api.php">https://www.jingege.wang/bioinformatics/CPAS/api.php</a><br>
+                    <strong>Licence:</strong> MIT
+                </p>
+            </section>
+            
+            <section id="installation">
+                <h2>2. Installation</h2>
+                <p>You can install CanPAS from GitHub using the remotes package:</p>
+                <pre><code>remotes::install_github("WangJin93/CanPAS")</code></pre>
+                <p>To install the pinned release tag:</p>
+                <pre><code>remotes::install_github("WangJin93/CanPAS@v1.0.0")</code></pre>
+                <p>To run the Shiny application shipped with the package:</p>
+                <pre><code>library(CanPAS)
+run_cpas_app()</code></pre>
+            </section>
+            
+            <section id="citation">
+                <h2>3. Citation</h2>
+                <p>If you use CanPAS in your research, please cite the R package:</p>
+                <div class="citation-box" id="canpas-citation">
+                    <p>
+                        Wang J. CanPAS: Cancer Prognosis Analysis Suite. R package version 1.0.0 (2026).
+                        <a href="https://github.com/WangJin93/CanPAS">https://github.com/WangJin93/CanPAS</a>
+                    </p>
+                    <p>
+                        A tool paper describing CanPAS is in preparation.
+                    </p>
+                    <button class="copy-btn" onclick="downloadRIS('canpas')">⬇️ Download RIS (EndNote)</button>
+                </div>
+            </section>
+            
+            <section id="function-reference">
+                <h2>4. Function Reference</h2>
+                
+                <div class="function-box" id="func-get_data">
+                    <div class="function-name">4.1 get_data</div>
+                    <h4>Description</h4>
+                    <p>Query the CanPAS public API (backed by a MySQL mirror of GEO series-matrix survival / expression tables). The response is returned as a structured object of class <code>cpas_get</code> together with the exact URL used.</p>
+                    <h4>Usage</h4>
+                    <pre><code>get_data(
+  dataset,
+  action = c("expression", "gpl", "surv_data"),
+  ids = NULL,
+  base_url = "https://www.jingege.wang/bioinformatics/CPAS/api.php",
+  timeout_sec = 120,
+  use_cache = NULL
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>dataset</td><td>Mirror table to query: a dataset accession for action = "expression" / "surv_data", or a platform id (e.g. "GPL96") for action = "gpl". The value is sent to the API as its table request parameter, with a dash sent as the underscore the mirror uses ("A5-PCPG" queries the table A5_PCPG).</td></tr>
+                        <tr><td>action</td><td>One of "expression" (sample-level expression of the requested probes/ids), "gpl" (probe-to-gene mapping of a platform) or "surv_data" (survival table of a dataset).</td></tr>
+                        <tr><td>ids</td><td>Reference ids (probes for action = "expression", Entrez gene ids for action = "gpl"). Ignored for action = "surv_data". May be a character vector; multiple ids are collapsed with ",".</td></tr>
+                        <tr><td>base_url</td><td>API endpoint. Defaults to the CanPAS public API.</td></tr>
+                        <tr><td>timeout_sec</td><td>Connection timeout in seconds passed to <code>getOption("timeout")</code> for the duration of the call.</td></tr>
+                        <tr><td>use_cache</td><td>Reuse the local file cache. NULL (default) follows <code>getOption("CanPAS.cache", TRUE)</code> and the environment variables CANPAS_CACHE / CPAS_CACHE; TRUE or FALSE forces the choice for this call. Cached answers are used even after expiry when the network request fails.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## The mirrored survival table of a real cohort (ID, endpoint columns
+## and clinical covariates).
+r <- get_data(dataset = "GSE31210", action = "surv_data")
+head(r$response)
+
+## Sample-level expression for chosen platform ids.
+e <- get_data(dataset = "GSE14814", action = "expression",
+              ids = c("1053_at", "200801_x_at"))
+head(e$response)[, 1:4]</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-get_expr_data">
+                    <div class="function-name">4.2 get_expr_data</div>
+                    <h4>Description</h4>
+                    <p>Resolves gene symbols to probes on the dataset's platform (via the ID_map table and the platform's probe-to-gene mapping) and downloads the matching expression values from the CanPAS API. Multiple probes mapping to the same gene can be collapsed with a user-selected rule. Datasets whose accession starts with "TCGA-" are handled differently: values are fetched per gene from UCSC Xena on demand, so there is no probe resolution and <code>process_duplicates</code> is ignored.</p>
+                    <h4>Usage</h4>
+                    <pre><code>get_expr_data(
+  dataset,
+  gene = NULL,
+  process_duplicates = c("max", "mean", "median", "min", "no"),
+  genes = NULL
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>dataset</td><td>Dataset accession in <code>dataset_info</code>, e.g. "GSE14814" or "TCGA-LUAD".</td></tr>
+                        <tr><td>gene</td><td>Character vector of gene symbols.</td></tr>
+                        <tr><td>process_duplicates</td><td>How to collapse several probes that map to the same gene: "max" (default), "mean", "median", "min" - or "no" to keep probe-level rows (columns then carry probe ids instead of symbols). Ignored for TCGA datasets.</td></tr>
+                        <tr><td>genes</td><td>One or more gene symbols (character); equivalent to <code>gene</code> (supply only one of the two).</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## GEO: probe ids are resolved through the platform map and collapsed
+## to one value per gene.
+e <- get_expr_data(dataset = "GSE31210", genes = c("FOXM1", "TP53"))
+e$metadata
+head(e$expr_data)
+
+## TCGA: values are fetched per gene from UCSC Xena (gene-level log2).
+tcga <- get_expr_data(dataset = "TCGA-LUAD", genes = "TP53")
+head(tcga$expr_data)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-merge_surv_expr">
+                    <div class="function-name">4.3 merge_surv_expr</div>
+                    <h4>Description</h4>
+                    <p>Pulls the survival table of a dataset from the CanPAS API and joins it with gene expression data produced by <code>get_expr_data()</code> on the common sample identifier (ID). For datasets whose accession starts with "TCGA-" the local TCGA clinical table is used instead of the mirror.</p>
+                    <h4>Usage</h4>
+                    <pre><code>merge_surv_expr(dataset, expr_data)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>dataset</td><td>Dataset accession in <code>dataset_info</code> (e.g. "GSE14814" or "TCGA-LUAD").</td></tr>
+                        <tr><td>expr_data</td><td>Result object of class <code>cpas_get_expr</code> returned by <code>get_expr_data()</code> (an object with an expr_data element whose first column is ID) or a plain data.frame in that format.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>e <- get_expr_data(dataset = "GSE31210", genes = c("FOXM1", "TP53"))
+m <- merge_surv_expr(dataset = "GSE31210", expr_data = e)
+
+## merged_data: ID, &lt;TYPE&gt;_time (years), &lt;TYPE&gt;_status (0/1), gene columns
+colnames(m$merged_data)
+
+## raw_surv_data keeps the clinical columns of that cohort.
+colnames(m$raw_surv_data)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-endpoint_resolve">
+                    <div class="function-name">4.4 endpoint_resolve</div>
+                    <h4>Description</h4>
+                    <p>Returns the concrete endpoint token available for a cohort and endpoint (family name or raw token), using the columns of the packaged <code>dataset_info</code> catalog (e.g. EP_DFS). A family is resolved to the token the cohort actually provides; a raw token is returned only when it is a known endpoint token, otherwise NA.</p>
+                    <h4>Usage</h4>
+                    <pre><code>endpoint_resolve(dataset, type)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>dataset</td><td>Dataset accession (e.g. "GSE31210", "TCGA-LGG").</td></tr>
+                        <tr><td>type</td><td>Family name ("OS", "DSS", "DFS", "PFS", "MFS") or a raw endpoint token.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## The token a real cohort actually contributes for a family.
+endpoint_resolve("GSE31210", "DFS")    # "RFS": that cohort is RFS-based
+endpoint_resolve("GSE13507", "OS")     # "OS"
+endpoint_resolve("TCGA-LUAD", "PFS")   # "PFI"
+
+## NA is returned when the cohort has no endpoint of that family.
+endpoint_resolve("GSE31210", "DSS")
+endpoint_resolve("E-MTAB-1205", "DFS") # "DFS"</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-endpoint_options">
+                    <div class="function-name">4.5 endpoint_options</div>
+                    <h4>Description</h4>
+                    <p>Returns one row per endpoint family available for a cohort, with the concrete endpoint token, whether the token is a TCGA-derived endpoint, the analysis family and a display label such as "DFS (RFS)" or "DFS (DFI) [derived]".</p>
+                    <h4>Usage</h4>
+                    <pre><code>endpoint_options(dataset, family = NULL)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>dataset</td><td>Dataset accession (e.g. "GSE31210", "TCGA-LGG").</td></tr>
+                        <tr><td>family</td><td>Optional family filter (one or more of "OS", "DSS", "DFS", "PFS", "MFS").</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## What a real cohort can be analysed on, with the token per family.
+endpoint_options("TCGA-LGG")
+endpoint_options("GSE13507")
+
+## Only one family at a time, when that is all you need.
+endpoint_options("GSE31210", family = "DFS")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-COX_by_genes">
+                    <div class="function-name">4.6 COX_by_genes</div>
+                    <h4>Description</h4>
+                    <p>Fits one univariable Cox proportional-hazards model per gene (<code>Surv(time, status) ~ gene</code>) and returns hazard ratios, 95% confidence intervals, Wald p-values and Benjamini-Hochberg FDRs for every gene, together with the fitted model objects. This is a panel screen: each gene is estimated separately and the genes are never adjusted for one another.</p>
+                    <h4>Usage</h4>
+                    <pre><code>COX_by_genes(df, type = "OS", genes)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>Data.frame whose first column is ID and that contains the columns &lt;type&gt;_time (years), &lt;type&gt;_status (0/1) and one numeric column per marker.</td></tr>
+                        <tr><td>type</td><td>Endpoint family ("OS", "DSS", "DFS", "PFS", "MFS") or a concrete token ("RFS", "DFI", "PFI" ...). Families are resolved to the token available in df.</td></tr>
+                        <tr><td>genes</td><td>Character vector of gene (expression) columns to test.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>d <- cohort_merged("GSE31210", c("FOXM1", "TP53"), type = "OS")
+r <- COX_by_genes(d, type = "OS", genes = c("FOXM1", "TP53"))
+
+## gene, HR, HR95L, HR95H, Pvalue, P_adj (BH-FDR across the panel)
+head(r$results_table)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-COX_analysis">
+                    <div class="function-name">4.7 COX_analysis</div>
+                    <h4>Description</h4>
+                    <p>Fits Cox proportional-hazards models on a data.frame of survival plus continuous and/or categorical covariates, and formats a tidy results table (hazard ratios, 95% CIs, Wald p-values, sample sizes per variable). Use <code>method = "uni"</code> for one model per covariate and <code>method = "multi"</code> for a single multivariable model with all covariates.</p>
+                    <h4>Usage</h4>
+                    <pre><code>COX_analysis(
+  df,
+  type = NULL,
+  cont_Variates = NULL,
+  cate_Variates = NULL,
+  method = c("uni", "multi"),
+  precision = 3,
+  min_level_n = 5L,
+  min_covariates = 2L,
+  drop_nonestimable = TRUE
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>df</td><td>Data.frame. If type is given it must contain ID, &lt;type&gt;_time and &lt;type&gt;_status; if type = NULL the columns must already be named time and status.</td></tr>
+                        <tr><td>type</td><td>Endpoint family (OS/DSS/DFS/PFS/MFS) or concrete token; the family is resolved to the token available in df. NULL when df already contains time/status. Default NULL.</td></tr>
+                        <tr><td>cont_Variates</td><td>Character vector of continuous covariate columns.</td></tr>
+                        <tr><td>cate_Variates</td><td>Character vector of categorical covariate columns (the first factor level is the reference level).</td></tr>
+                        <tr><td>method</td><td>Either "uni" (one model per covariate) or "multi" (single multivariable model with all covariates).</td></tr>
+                        <tr><td>precision</td><td>Decimal places used to format the display columns (HR_text, P_text); numeric columns keep full precision.</td></tr>
+                        <tr><td>min_level_n</td><td>Integer. Minimum number of patients required for a categorical level to keep its own coefficient in the multivariable model. Rarer levels are merged into an "Other" level when that leaves the covariate usable. Default 5.</td></tr>
+                        <tr><td>min_covariates</td><td>Integer. Number of covariates below which the multivariable model is no longer regarded as an adjusted model; metadata$reduced is then TRUE. Default 2.</td></tr>
+                        <tr><td>drop_nonestimable</td><td>Logical. If TRUE (default) a non-estimable multivariable model is repaired instead of being refused: non-estimable covariates are located and removed one at a time, and every decision is reported in metadata$dropped_covariates and metadata$drop_notes. If FALSE the model is fitted on the raw complete cases and an error is raised when it is not estimable.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## Prerequisite chain: expression plus survival, with clinical covariates.
+d &lt;- cohort_merged("GSE13507", c("FOXM1", "TP53"), type = "OS", clin = TRUE)
+
+## One model per covariate.
+r &lt;- COX_analysis(d, type = "OS", cont_Variates = c("FOXM1", "age"),
+                   cate_Variates = c("grade", "N"), method = "uni")
+head(r$results_table)
+
+## Joint model, with every covariate removal recorded and explained.
+r2 &lt;- COX_analysis(d, type = "OS", cont_Variates = c("FOXM1", "age"),
+                    cate_Variates = c("grade", "N"), method = "multi")
+r2$metadata$dropped_covariates
+r2$metadata$reduced</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-quick_km">
+                    <div class="function-name">4.8 quick_km</div>
+                    <h4>Description</h4>
+                    <p>One-stop helper: retrieves expression of the requested genes for a dataset, merges it with the survival table, and draws a grid of Kaplan-Meier plots (median split) for every gene that maps on the platform.</p>
+                    <h4>Usage</h4>
+                    <pre><code>quick_km(
+  dataset,
+  genes,
+  process_duplicates = "max",
+  type = "OS",
+  ncol = 3,
+  cutpoint = "median",
+  ...
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>dataset</td><td>Dataset accession in <code>dataset_info</code> (GEO), or "TCGA-&lt;PROJECT&gt;" (e.g. "TCGA-LUAD").</td></tr>
+                        <tr><td>genes</td><td>Character vector of gene symbols.</td></tr>
+                        <tr><td>process_duplicates</td><td>Collapsing rule for multiple probes per gene (see <code>get_expr_data()</code>). Default "max".</td></tr>
+                        <tr><td>type</td><td>Endpoint family (OS/DSS/DFS/PFS/MFS) or concrete token. A family is resolved to the token available in the cohort (e.g. DFS -&gt; RFS/DFI/EFS).</td></tr>
+                        <tr><td>ncol</td><td>Number of columns in the plot grid.</td></tr>
+                        <tr><td>cutpoint</td><td>Cut-point rule passed to <code>plot_km()</code>.</td></tr>
+                        <tr><td>...</td><td>Further arguments passed to <code>plot_km()</code> / <code>survminer::ggsurvplot</code>.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## Draws the KM grid for the genes that map on the platform.
+quick_km(dataset = "GSE31210", genes = c("FOXM1", "TP53"), type = "OS",
+         ncol = 2, pval = TRUE, legend = "bottom")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-get_signature_value">
+                    <div class="function-name">4.9 get_signature_value</div>
+                    <h4>Description</h4>
+                    <p>Parses a linear signature string such as "0.3*GAPDH + 0.7*ACTB + 0.5*RPN1" and computes the weighted sum of expression values for every sample of a dataset. Weights are applied in the order of the signature string.</p>
+                    <h4>Usage</h4>
+                    <pre><code>get_signature_value(
+  signature,
+  dataset,
+  process_duplicates = "max",
+  allow_missing = FALSE
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>signature</td><td>Character string of the form &lt;weight&gt;*&lt;GENE&gt; +/- &lt;weight&gt;*&lt;GENE&gt; ... (weights may be negative).</td></tr>
+                        <tr><td>dataset</td><td>Dataset accession (GEO or "TCGA-&lt;PROJECT&gt;").</td></tr>
+                        <tr><td>process_duplicates</td><td>Probe collapsing rule passed to <code>get_expr_data()</code> (default "max").</td></tr>
+                        <tr><td>allow_missing</td><td>If FALSE (default), all signature genes must be measurable on the platform; otherwise the score is computed on the subset of genes that are available (with a message).</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>s &lt;- get_signature_value(signature = "0.5*FOXM1 + 0.5*TP53",
+                         dataset = "GSE31210")
+s$metadata$genes_used; s$metadata$sample_count
+s$signature_info$weights   # the parsed weights, in order
+head(s$results_table)      # ID + one score per patient
+
+## Genes that are not measurable in that cohort: score the available subset.
+s2 &lt;- get_signature_value("0.5*FOXM1 + 0.5*TP53", "GSE31210",
+                          allow_missing = TRUE)
+s2$metadata$genes_missing</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-cpas_meta">
+                    <div class="function-name">4.10 cpas_meta</div>
+                    <h4>Description</h4>
+                    <p>Two-stage cross-cohort meta-analysis on cohorts of the same cancer type: stage 1 fits <code>coxph(Surv(time, status) ~ marker)</code> in every cohort to obtain logHR and SE; stage 2 pools them by inverse-variance weighting (fixed effect, or random effects with DerSimonian-Laird) and reports the pooled HR (95% CI), Z/p and the heterogeneity statistics Q/df/I&sup2;/tau&sup2;.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cpas_meta(
+  datasets,
+  marker,
+  type = "OS",
+  method = c("RE", "FE"),
+  confounders = NULL,
+  min_events = 5,
+  max_try = 3,
+  merged = NULL
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>datasets</td><td>Character vector of dataset accessions (matching <code>dataset_info</code>$Accession).</td></tr>
+                        <tr><td>marker</td><td>A single gene symbol (e.g. "FOXM1") or a signature formula string (e.g. "0.5*FOXM1+0.3*TP53").</td></tr>
+                        <tr><td>type</td><td>Endpoint family (OS/DSS/DFS/PFS/MFS) or raw endpoint token (OS/DSS/DFS/RFS/PFS/MFS/DFI/PFI/DRFS/EFS ...). The family is resolved to the concrete token per cohort (see <code>endpoint_resolve()</code>) and recorded in per_dataset$endpoint.</td></tr>
+                        <tr><td>method</td><td>"RE" (random effects, default) or "FE" (fixed effect).</td></tr>
+                        <tr><td>confounders</td><td>Optional character vector of multivariable-adjustment covariate names (must exist in the merged data; the per-cohort intersection of available covariates is used).</td></tr>
+                        <tr><td>min_events</td><td>Minimum number of events for a cohort to be included (default 5).</td></tr>
+                        <tr><td>max_try</td><td>Number of retries when data retrieval fails for a cohort (to absorb API jitter).</td></tr>
+                        <tr><td>merged</td><td>Optional named list (cohort name -&gt; already merged data.frame). When supplied, no network retrieval is performed.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## Two lung-cancer cohorts, one OS analysis.
+m &lt;- cpas_meta(c("TCGA-LUAD", "GSE31210"), marker = "FOXM1", type = "OS")
+m$per_dataset[, c("dataset", "endpoint", "n", "events", "HR")]
+m$pooled              # pooled HR (95% CI), Z/p, Q/df/I2/tau2
+
+loo_meta(m)           # leave-one-out sensitivity
+print(m)</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-plot_meta_forest">
+                    <div class="function-name">4.11 plot_meta_forest</div>
+                    <h4>Description</h4>
+                    <p>Draws the forest plot of a <code>cpas_meta()</code> result: the per-cohort HR (95% CI) and the pooled HR. Per-cohort significance stars and the pooled HR / 95% PI annotation are anchored inside the panel, so they are never silently dropped.</p>
+                    <h4>Usage</h4>
+                    <pre><code>plot_meta_forest(
+  x,
+  digits = 4,
+  show_stars = TRUE,
+  label_size = 4.2,
+  star_size = NULL,
+  y_headroom = 3.6,
+  x_frac = 0.02,
+  label_lift = 1,
+  label_where = c("inside", "subtitle"),
+  ...
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>x</td><td>A <code>cpas_meta</code> object.</td></tr>
+                        <tr><td>digits</td><td>Decimal places for the annotations in the figure (default 4).</td></tr>
+                        <tr><td>show_stars</td><td>Whether to draw per-cohort significance stars at the left edge of the panel (* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001). Default TRUE.</td></tr>
+                        <tr><td>label_size</td><td>Font size of the pooled HR / 95% PI annotation (default 4.2).</td></tr>
+                        <tr><td>star_size</td><td>Font size of the stars and the Overall label; default 0.85 * label_size.</td></tr>
+                        <tr><td>y_headroom</td><td>Headroom at the top of the y axis so that the Overall diamond and its CI are not clipped (default 3.6).</td></tr>
+                        <tr><td>x_frac</td><td>Horizontal position, as a fraction of the panel width, anchoring the stars and the pooled annotation (default 0.02).</td></tr>
+                        <tr><td>label_lift</td><td>Vertical offset of the pooled annotation relative to the Overall row (default 1).</td></tr>
+                        <tr><td>label_where</td><td>Where the pooled annotation goes: "inside" (top-left inside the panel) or "subtitle" (above the panel). Default "inside".</td></tr>
+                        <tr><td>...</td><td>Reserved, currently unused.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>m &lt;- cpas_meta(c("TCGA-LUAD", "GSE31210"), marker = "FOXM1", type = "OS")
+plot_meta_forest(m)
+plot_meta_forest(m, digits = 3, label_where = "subtitle")</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-cpas_km_pooled">
+                    <div class="function-name">4.12 cpas_km_pooled</div>
+                    <h4>Description</h4>
+                    <p>Splits each cohort into High/Low at its own median marker value and then pools by <code>method</code>: "ipd" merges the patients directly for a pooled survfit (the log-rank p is given both pooled and stratified by cohort); "meta" is a two-stage route that pools the per-time-point survival probabilities S(t) of each cohort KM curve on the log(-log S) scale by inverse-variance weighting (RE/FE), giving a pooled survival curve and a 1/3/5-year table; "both" returns the two.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cpas_km_pooled(
+  merged,
+  marker,
+  type = "OS",
+  method = c("both", "ipd", "meta"),
+  landmarks = c(1, 3, 5),
+  meta_method = "RE",
+  cut = c("median", "top_pct", "custom"),
+  top_pct = NULL,
+  cut_value = NULL
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>merged</td><td>Named list of per-cohort merged data.frames from <code>merge_surv_expr()</code>; names must be catalog accessions so that the family is resolved to a concrete endpoint per cohort. The returned object carries dataset_endpoints (the endpoint actually used in each dataset).</td></tr>
+                        <tr><td>marker</td><td>Gene column name.</td></tr>
+                        <tr><td>type</td><td>Endpoint (OS/RFS/...); a family is resolved per cohort.</td></tr>
+                        <tr><td>method</td><td>"ipd", "meta" or "both".</td></tr>
+                        <tr><td>landmarks</td><td>Landmark time points (in years) to report.</td></tr>
+                        <tr><td>meta_method</td><td>RE = random effects (DerSimonian-Laird, default), FE = fixed effect, for the time-point pooling.</td></tr>
+                        <tr><td>cut</td><td>High/Low grouping rule: "median" (default, High = marker above that cohort's own median), "top_pct" (High = the top top_pct% of that cohort by expression) or "custom" (absolute threshold cut_value on the log2 scale or signature score).</td></tr>
+                        <tr><td>top_pct</td><td>Percentage for cut = "top_pct": a single finite value between 1 and 99. The threshold uses <code>stats::quantile()</code> (type 7); cohorts left with an empty side are recorded in empty_cohorts with a reason and do not enter the pooling.</td></tr>
+                        <tr><td>cut_value</td><td>Threshold for cut = "custom": a single finite value applied to log2 expression (or signature score). Cohorts with no patient on one side of it are recorded in empty_cohorts and excluded.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## Explicitly built list of merged cohorts (names must be accessions).
+merged &lt;- list(GSE31210 = cohort_merged("GSE31210", "FOXM1", type = "RFS"),
+               GSE37745 = cohort_merged("GSE37745", "FOXM1", type = "RFS"))
+
+km &lt;- cpas_km_pooled(merged, marker = "FOXM1", type = "RFS", method = "both")
+km$datasets; km$dataset_endpoints; km$logrank_p
+km$skipped_cohorts; km$skipped_reasons
+
+plot_cpas_km(km)                       # pooled curve + landmark table
+plot_cpas_km_perdataset(km, ncol = 2)  # one panel per cohort</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-plot_cpas_km_perdataset">
+                    <div class="function-name">4.13 plot_cpas_km_perdataset</div>
+                    <h4>Description</h4>
+                    <p>Splits a <code>cpas_km_pooled()</code> result by dataset into one small Kaplan-Meier panel per cohort and lays them out as a grid.</p>
+                    <h4>Usage</h4>
+                    <pre><code>plot_cpas_km_perdataset(km, ncol = 4, draw = TRUE)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>km</td><td>A <code>cpas_km_pooled</code> object.</td></tr>
+                        <tr><td>ncol</td><td>Number of columns in the grid.</td></tr>
+                        <tr><td>draw</td><td>TRUE (default) draws immediately to the current device with <code>gridExtra::grid.arrange</code>; FALSE returns a composable <code>patchwork</code> object instead, for combining with other plots.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>km &lt;- cpas_km_pooled(merged, marker = "FOXM1", type = "RFS", method = "both")
+
+plot_cpas_km_perdataset(km, ncol = 2)                  # draw now
+p &lt;- plot_cpas_km_perdataset(km, ncol = 2, draw = FALSE)  # patchwork object</code></pre>
+                </div>
+                
+                <div class="function-box" id="func-run_cpas_app">
+                    <div class="function-name">4.14 run_cpas_app</div>
+                    <h4>Description</h4>
+                    <p>Starts the Shiny application shipped inside the CanPAS package. The app implements most of the package: GEO/TCGA cohort loading, single- and multi-variable Cox analysis, Kaplan-Meier, time-dependent ROC, cross-cohort meta-analysis with pooled Kaplan-Meier, weighted gene-signature scoring and TCGA clinical exploration.</p>
+                    <h4>Usage</h4>
+                    <pre><code>run_cpas_app(host = "127.0.0.1", port = NULL, launch.browser = TRUE, ...)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>host</td><td>Host to bind, default "127.0.0.1".</td></tr>
+                        <tr><td>port</td><td>Port to listen on (default: a free port chosen by Shiny).</td></tr>
+                        <tr><td>launch.browser</td><td>Launch the default browser (TRUE) or not.</td></tr>
+                        <tr><td>...</td><td>Further arguments passed to <code>shiny::runApp</code>.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## The app ships inside the package; the Help page documents every page.
+## Launching it needs the suggested packages (shiny, bs4Dash, DT, ...).
+run_cpas_app()                 # free port, opens the browser
+run_cpas_app(port = 3838)      # fixed port</code></pre>
+                </div>
+                
+            </section>
+            
+            <section id="shiny-application">
+                <h2>5. Shiny Application</h2>
+                <p>
+                    The Shiny application is bundled with the package and is started locally with
+                    <code>run_cpas_app()</code>. There is no hosted instance: the app is served from your own
+                    R session, and the analysis pages query the CanPAS public API at run time.
+                </p>
+                <p>The application has the following pages:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Dashboard</strong> - an overview of the resource and the catalog.</li>
+                    <li><strong>Datasets</strong> - single-dataset analysis, Kaplan-Meier, Cox regression, Cox by genes, multi-datasets analysis, Cox by datasets, pooled Kaplan-Meier and meta-analysis.</li>
+                    <li><strong>Methods</strong> - the statistical conventions the functions follow.</li>
+                    <li><strong>Help</strong> - page-by-page documentation of the app.</li>
+                </ul>
+                <pre><code>library(CanPAS)
+run_cpas_app()                 # free port, opens the browser
+run_cpas_app(port = 3838)      # fixed port</code></pre>
+            </section>
+            
+            <section id="data-sources">
+                <h2>6. Data Sources &amp; API</h2>
+                <p>
+                    CanPAS is built on a curated catalog of <strong>197 cohorts</strong> covering
+                    <strong>29 cancer types</strong> and <strong>38,981 analysable samples</strong>, assembled from
+                    five source archives:
+                </p>
+                <table>
+                    <tr><th>Source archive</th><th>Cohorts</th></tr>
+                    <tr><td>GEO</td><td>145</td></tr>
+                    <tr><td>EMBL-EBI</td><td>14</td></tr>
+                    <tr><td>TCGA</td><td>33</td></tr>
+                    <tr><td>CGGA</td><td>3</td></tr>
+                    <tr><td>cBioPortal-hosted</td><td>2</td></tr>
+                </table>
+                <p>
+                    Cohort-by-family coverage is OS 142, DSS 41, DFS 98, PFS 49 and MFS 17. Every delivered cohort
+                    comes with an expression table and a harmonised survival table (time in years, status 0/1),
+                    plus clinical covariates where available. TCGA cohorts are the exception on the expression
+                    side: the mirror holds no TCGA expression table, so TCGA expression is fetched on demand from
+                    UCSC Xena, with the clinical tables held locally.
+                </p>
+                <p>
+                    Non-TCGA cohorts are served from the public data API / mirror at
+                    <a href="https://www.jingege.wang/bioinformatics/CPAS/api.php">https://www.jingege.wang/bioinformatics/CPAS/api.php</a>,
+                    which the package queries through <code>get_data()</code>. The API is rate-limited and answers
+                    repeated queries from the local file cache by default.
+                </p>
+                <p>
+                    Endpoint tokens are harmonised to pooling families: RFS, DFI and EFS are treated as DFS, PFI as
+                    PFS, DRFS as MFS, and CSS / BCSS as DSS, so cohorts that report different tokens can be pooled
+                    within a family.
+                </p>
+            </section>
+            
+            <section id="verification">
+                <h2>7. Verification &amp; Reproducibility</h2>
+                <p>
+                    The catalog is produced by a scripted curation pipeline of 50+ numbered curation scripts, from
+                    series parsing through survival-table construction, clinical standardisation and
+                    expression-scale harmonisation. Each step is numbered and rerunnable, so a cohort can be
+                    rebuilt from its source series rather than edited by hand.
+                </p>
+                <p>
+                    A verification script cross-checks every catalogued cohort against the data mirror. At the
+                    released 197-cohort state it runs 15 checks and reports <strong>0 errors / 0 warnings</strong>,
+                    with every catalogued row fully usable.
+                </p>
+                <p>
+                    A reproducibility bundle of the curation scripts and a frozen catalog accompany the release, so
+                    the delivered cohort tables can be regenerated and the reported counts re-derived.
+                </p>
+            </section>
+        </main>
+    </div>
+    
+    <script>
+        // Toggle Function Reference submenu
+        document.querySelector('.toggle-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.toggle('expanded');
+            document.getElementById('function-submenu').classList.toggle('show');
+        });
+
+        // RIS citation data map
+        const RIS_DATA = {
+            canpas: {
+                filename: 'CanPAS_Wang_2026.ris',
+                content: `TY  - COMP
+AU  - Wang, Jin
+TI  - CanPAS: Cancer Prognosis Analysis Suite
+PY  - 2026
+PB  - GitHub
+ET  - R package version 1.0.0
+UR  - https://github.com/WangJin93/CanPAS
+ER  - 
+`
+            }
+        };
+
+        // Download RIS file for EndNote
+        function downloadRIS(key) {
+            const data = RIS_DATA[key];
+            if (!data) { alert('RIS data not found.'); return; }
+            const blob = new Blob([data.content], { type: 'application/x-research-info-systems;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = data.filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            const btn = event.target;
+            const original = btn.innerText;
+            btn.innerText = '✓ Downloaded!';
+            btn.style.background = '#27ae60';
+            setTimeout(() => {
+                btn.innerText = original;
+                btn.style.background = '';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
