@@ -304,6 +304,24 @@
         .copy-btn:hover {
             background: #2980b9;
         }
+
+        .doc-callout {
+            background: #f0f7fc;
+            border-left: 4px solid #3498db;
+            border-radius: 0 8px 8px 0;
+            padding: 20px;
+            margin: 0 0 30px;
+        }
+
+        .doc-callout a {
+            color: #3498db;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .doc-callout a:hover {
+            text-decoration: underline;
+        }
         
         @media (max-width: 900px) {
             .container {
@@ -349,6 +367,16 @@
                         <li><a href="#func-cpas_km_pooled">4.12 cpas_km_pooled</a></li>
                         <li><a href="#func-plot_cpas_km_perdataset">4.13 plot_cpas_km_perdataset</a></li>
                         <li><a href="#func-run_cpas_app">4.14 run_cpas_app</a></li>
+                        <li><a href="#func-endpoint_semantics">4.15 endpoint_semantics</a></li>
+                        <li><a href="#func-endpoint_pooling_class">4.16 endpoint_pooling_class</a></li>
+                        <li><a href="#func-cpas_manifest">4.17 cpas_manifest</a></li>
+                        <li><a href="#func-cohort_overlap">4.18 cohort_overlap</a></li>
+                        <li><a href="#func-batch_diagnostics">4.19 batch_diagnostics</a></li>
+                        <li><a href="#func-plot_batch_diagnostics">4.20 plot_batch_diagnostics</a></li>
+                        <li><a href="#func-cpas_reproducibility_index">4.21 cpas_reproducibility_index</a></li>
+                        <li><a href="#func-cpas_pipeline_steps">4.22 cpas_pipeline_steps</a></li>
+                        <li><a href="#func-endpoint_adjudication">4.23 endpoint_adjudication</a></li>
+                        <li><a href="#func-endpoint_agreement">4.24 endpoint_agreement</a></li>
                     </ul>
                 </li>
                 <li><a href="#shiny-application">5. Shiny Application</a></li>
@@ -363,10 +391,26 @@
                 <p>A curated cross-archive resource and R toolkit for survival analysis of public cancer cohorts.</p>
                 <div class="hero-meta">
                     <span>📦 Version: 1.0.0</span>
+                    <span>⚖️ Licence: MIT</span>
                     <span>👤 Author: Jin Wang</span>
                     <span>📧 Maintainer: jin.wang93@outlook.com</span>
-                    <span>📅 Date: 2026-09-26</span>
+                    <span>📅 Date: 2026-09-30</span>
                 </div>
+            </div>
+
+            <div class="doc-callout">
+                <strong>📖 Full documentation:</strong>
+                <a href="https://wangjin93.github.io/CanPAS/">https://wangjin93.github.io/CanPAS/</a>
+                <p style="margin: 10px 0 0;">
+                    The dedicated pkgdown site is the reference for this package: a reference page for
+                    every exported function, plus two articles - <em>Getting started</em> and
+                    <em>Endpoints and pooling</em>. It is generated from the released source, so it matches
+                    version 1.0.0. Everything below is the short version.
+                </p>
+                <p style="margin: 10px 0 0;">
+                    Install the tagged release:
+                    <code>remotes::install_github("WangJin93/CanPAS@v1.0.0")</code>
+                </p>
             </div>
             
             <section id="introduction">
@@ -374,9 +418,9 @@
                 <p>
                     CanPAS (Cancer Prognosis Analysis Suite) is an R package and a curated data resource for
                     survival analysis of public cancer cohorts. It serves expression matrices and harmonised
-                    survival tables from a curated GEO / EMBL-EBI / TCGA / CGGA / cBioPortal-hosted mirror over a
-                    public REST API, and from TCGA through UCSC Xena with local clinical tables, exposing one
-                    uniform "merged data" schema.
+                    survival tables from a curated GEO / EMBL-EBI ArrayExpress / TCGA / CGGA /
+                    cBioPortal-hosted mirror over a public REST API, and from TCGA through UCSC Xena with local
+                    clinical tables, exposing one uniform "merged data" schema.
                 </p>
                 <p>
                     Endpoints are requested by family (OS, DSS, DFS, PFS, MFS), and the token a cohort actually
@@ -387,22 +431,39 @@
                     risks, with five statistical safeguards disclosed by default. A bundled Shiny application
                     drives the same exported functions.
                 </p>
+                <p>
+                    Version 1.0.0 is the first tagged release (MIT licence, R &gt;= 4.0.0). It is documented on a
+                    dedicated site, <a href="https://wangjin93.github.io/CanPAS/">wangjin93.github.io/CanPAS</a>,
+                    with a reference page for every exported function and two articles, 66 man pages and two
+                    offline vignettes. Every analysis now also returns an <strong>analysis manifest</strong>
+                    (<code>cpas_manifest()</code>) recording what was analysed and what was changed, and the
+                    default behaviour is fail-safe: a model that would need covariates dropped or rows excluded is
+                    reported as <em>not estimable</em> with its reasons instead of being silently refitted.
+                </p>
                 <h3>Features</h3>
                 <ul style="margin-left: 20px; margin-bottom: 15px;">
-                    <li>197 curated cohorts, 29 cancer types and 38,981 analysable samples behind one uniform schema</li>
-                    <li>Endpoint-family harmonisation: RFS/DFI/EFS pooled as DFS, PFI as PFS, DRFS as MFS, CSS/BCSS as DSS</li>
+                    <li>197 curated cohorts across 29 cancer types and 38,981 analysable samples behind one uniform schema, from five source buckets: GEO, EMBL-EBI ArrayExpress/BioStudies, TCGA, CGGA and cBioPortal-hosted studies</li>
+                    <li>Endpoint semantics layer: every cohort-by-family cell carries token, token role, event definition, time origin, censoring rule, competing events, source field, derived flag and evidence, plus a pooling class (Exact-equivalent / Clinically-related / Not-poolable / Unknown / Absent) - 347 of the 985 cohort-by-family cells resolved at token level</li>
+                    <li>Endpoint-family harmonisation: RFS/DFI/EFS pooled as DFS, PFI as PFS, DRFS as MFS, CSS/BCSS as DSS, with a strict exact-only pooling mode when only the family's own token may be pooled</li>
                     <li>Expression table + harmonised survival table per cohort (time in years, status 0/1), plus clinical covariates where available</li>
                     <li>Gene and weighted signature scoring, Kaplan-Meier and cut-point analysis</li>
                     <li>Univariable / multivariable Cox models, panel screening and cross-dataset Cox</li>
                     <li>Time-dependent ROC, cross-cohort random-effects meta-analysis and pooled Kaplan-Meier</li>
                     <li>Competing-risks Cox models and cumulative incidence curves</li>
+                    <li><strong>Fail-safe default</strong>: a model that would need covariates dropped or rows excluded returns an explicit "not estimable" result with its reasons instead of silently refitting (<code>auto_repair = TRUE</code> restores the old behaviour and records every change)</li>
+                    <li><strong>Defensible statistical defaults</strong>: random-effects meta-analysis defaults to REML (DL, Hartung-Knapp and fixed-effect available) with prediction intervals parameterised t / normal / HK; a search-adjusted cut-point p-value; an events-per-variable guard; and a proportional-hazards check</li>
+                    <li><strong>Analysis manifest with every result</strong> (<code>cpas_manifest()</code>): cohorts, endpoint family and resolved token, pooling classes pooled, selection rule, rows/covariates dropped and why, cut-point rule and number of cut-points searched, PH test, meta method, tau&sup2;, I&sup2;, prediction intervals and versions</li>
+                    <li><strong>Overlap-aware pooling</strong> (<code>cohort_overlap()</code>: warn / refuse / dedupe) for cohorts that share patients, and <strong>batch diagnostics</strong> (<code>batch_diagnostics()</code>, <code>plot_batch_diagnostics()</code>) documenting why pooling works on within-cohort standardised effect sizes and within-cohort percentile cut-points, so absolute cross-platform differences do not enter the pooled estimate</li>
+                    <li><strong>Reproducibility index</strong> (<code>cpas_reproducibility_index()</code>, <code>cpas_pipeline_steps()</code>) over the curation steps and the deposited material; the curation pipeline itself ships inside the package as nine consolidated script files under <code>inst/pipeline/</code></li>
+                    <li><strong>Endpoint adjudication tooling</strong> (<code>endpoint_adjudication()</code> blinded rating sheets, <code>endpoint_agreement()</code> Cohen's kappa / agreement / adjudication rate)</li>
+                    <li>Documentation: a dedicated documentation site, 66 man pages (English), two offline vignettes, <code>citation("CanPAS")</code> and a public issue tracker</li>
                     <li>Bundled Shiny application covering the same exported functions</li>
                 </ul>
                 <h3>Data Sources</h3>
                 <table>
                     <tr><th>Source archive</th><th>Cohorts</th></tr>
                     <tr><td>GEO</td><td>145</td></tr>
-                    <tr><td>EMBL-EBI</td><td>14</td></tr>
+                    <tr><td>EMBL-EBI (ArrayExpress / BioStudies)</td><td>14</td></tr>
                     <tr><td>TCGA</td><td>33</td></tr>
                     <tr><td>CGGA</td><td>3</td></tr>
                     <tr><td>cBioPortal-hosted</td><td>2</td></tr>
@@ -422,10 +483,21 @@
                     report different tokens can be pooled within a family: a cohort contributing RFS and a cohort
                     contributing DFI both enter a DFS analysis, while OS, DSS, DFS, PFS and MFS are never mixed.
                 </p>
+                <p>
+                    Token-level resolution is recorded for <strong>347</strong> of the <strong>985</strong>
+                    cohort-by-family cells (197 cohorts x five families), each with its semantic record and its
+                    pooling class; the remaining cells are families the cohort simply does not report. Because the
+                    class of every cell is known, pooling can run in the documented
+                    <code>pooling = "family"</code> mode (Exact-equivalent + Clinically-related, which is what
+                    makes a cross-token DFS pool possible) or be restricted to <code>pooling = "exact"</code>
+                    (Exact-equivalent cells only).
+                </p>
                 <h3>Dependencies</h3>
                 <p><strong>Imports:</strong> dplyr, ggplot2, ggtext, gridExtra, jsonlite, survival, survminer, survivalROC</p>
                 <p class="links">
+                    <strong>Documentation:</strong> <a href="https://wangjin93.github.io/CanPAS/">https://wangjin93.github.io/CanPAS/</a><br>
                     <strong>GitHub:</strong> <a href="https://github.com/WangJin93/CanPAS">https://github.com/WangJin93/CanPAS</a><br>
+                    <strong>Issues:</strong> <a href="https://github.com/WangJin93/CanPAS/issues">https://github.com/WangJin93/CanPAS/issues</a><br>
                     <strong>Data API:</strong> <a href="https://www.jingege.wang/bioinformatics/CPAS/api.php">https://www.jingege.wang/bioinformatics/CPAS/api.php</a><br>
                     <strong>Licence:</strong> MIT
                 </p>
@@ -433,13 +505,31 @@
             
             <section id="installation">
                 <h2>2. Installation</h2>
-                <p>You can install CanPAS from GitHub using the remotes package:</p>
+                <p>
+                    CanPAS 1.0.0 is an MIT-licensed R package (R &gt;= 4.0.0) with a bundled Shiny app.
+                    <code>R CMD check</code> reports 0 errors, 0 warnings and 1 host note. Install the tagged
+                    release from GitHub:
+                </p>
+                <pre><code># install the tagged 1.0.0 release (recommended)
+remotes::install_github("WangJin93/CanPAS@v1.0.0")</code></pre>
+                <p>Or install the release tarball attached to the v1.0.0 GitHub release:</p>
+                <pre><code>install.packages("CanPAS_1.0.0.tar.gz", repos = NULL, type = "source")</code></pre>
+                <p>To follow the development branch instead of the pinned tag:</p>
                 <pre><code>remotes::install_github("WangJin93/CanPAS")</code></pre>
-                <p>To install the pinned release tag:</p>
-                <pre><code>remotes::install_github("WangJin93/CanPAS@v1.0.0")</code></pre>
+                <p>
+                    All imported packages are on CRAN. Optional packages enable extra features: the Shiny
+                    app needs <code>shiny</code>, <code>bs4Dash</code> and <code>DT</code>; TCGA expression through
+                    UCSC Xena needs <code>UCSCXenaTools</code>; the search-adjusted cut-point p-value needs
+                    <code>maxstat</code>; composing both pooling routes into one figure needs
+                    <code>patchwork</code>.
+                </p>
                 <p>To run the Shiny application shipped with the package:</p>
                 <pre><code>library(CanPAS)
-run_cpas_app()</code></pre>
+run_cpas_app()   # free port, opens the browser</code></pre>
+                <p>
+                    Worked examples for both the package and the app are on the documentation site,
+                    <a href="https://wangjin93.github.io/CanPAS/">https://wangjin93.github.io/CanPAS/</a>.
+                </p>
             </section>
             
             <section id="citation">
@@ -451,7 +541,11 @@ run_cpas_app()</code></pre>
                         <a href="https://github.com/WangJin93/CanPAS">https://github.com/WangJin93/CanPAS</a>
                     </p>
                     <p>
-                        A tool paper describing CanPAS is in preparation.
+                        A manuscript describing the CanPAS resource is under review.
+                    </p>
+                    <p>
+                        The package ships a machine-readable entry, so the current citation can always be printed
+                        from R with <code>citation("CanPAS")</code>.
                     </p>
                     <button class="copy-btn" onclick="downloadRIS('canpas')">⬇️ Download RIS (EndNote)</button>
                 </div>
@@ -617,7 +711,7 @@ head(r$results_table)</code></pre>
                 <div class="function-box" id="func-COX_analysis">
                     <div class="function-name">4.7 COX_analysis</div>
                     <h4>Description</h4>
-                    <p>Fits Cox proportional-hazards models on a data.frame of survival plus continuous and/or categorical covariates, and formats a tidy results table (hazard ratios, 95% CIs, Wald p-values, sample sizes per variable). Use <code>method = "uni"</code> for one model per covariate and <code>method = "multi"</code> for a single multivariable model with all covariates.</p>
+                    <p>Fits Cox proportional-hazards models on a data.frame of survival plus continuous and/or categorical covariates, and formats a tidy results table (hazard ratios, 95% CIs, Wald p-values, sample sizes per variable). Use <code>method = "uni"</code> for one model per covariate and <code>method = "multi"</code> for a single multivariable model with all covariates. The multivariable path is fail-safe by default: a model that would have to drop a covariate, merge a rare level or exclude rows is reported as <em>not estimable</em> with its reasons rather than being quietly reduced. Multivariable models warn below 10 events per variable, and the global <code>cox.zph</code> proportional-hazards test is returned with the result (p &lt; 0.05 flagged).</p>
                     <h4>Usage</h4>
                     <pre><code>COX_analysis(
   df,
@@ -628,7 +722,8 @@ head(r$results_table)</code></pre>
   precision = 3,
   min_level_n = 5L,
   min_covariates = 2L,
-  drop_nonestimable = TRUE
+  drop_nonestimable = NULL,
+  auto_repair = FALSE
 )</code></pre>
                     <h4>Arguments</h4>
                     <table>
@@ -641,7 +736,8 @@ head(r$results_table)</code></pre>
                         <tr><td>precision</td><td>Decimal places used to format the display columns (HR_text, P_text); numeric columns keep full precision.</td></tr>
                         <tr><td>min_level_n</td><td>Integer. Minimum number of patients required for a categorical level to keep its own coefficient in the multivariable model. Rarer levels are merged into an "Other" level when that leaves the covariate usable. Default 5.</td></tr>
                         <tr><td>min_covariates</td><td>Integer. Number of covariates below which the multivariable model is no longer regarded as an adjusted model; metadata$reduced is then TRUE. Default 2.</td></tr>
-                        <tr><td>drop_nonestimable</td><td>Logical. If TRUE (default) a non-estimable multivariable model is repaired instead of being refused: non-estimable covariates are located and removed one at a time, and every decision is reported in metadata$dropped_covariates and metadata$drop_notes. If FALSE the model is fitted on the raw complete cases and an error is raised when it is not estimable.</td></tr>
+                        <tr><td>drop_nonestimable</td><td>Deprecated logical, kept for continuity. When supplied it is mapped onto <code>auto_repair</code>; the default is now NULL.</td></tr>
+                        <tr><td>auto_repair</td><td>Logical, default FALSE (the fail-safe). A model that would have to drop a covariate, merge a rare level or exclude rows is reported as <em>not estimable</em> with its reasons and offending terms in <code>metadata</code>, and no model is returned for it. TRUE restores the previous repairing behaviour - non-estimable covariates are located and removed one at a time - and every decision is recorded.</td></tr>
                     </table>
                     <h4>Examples</h4>
                     <pre><code>## Prerequisite chain: expression plus survival, with clinical covariates.
@@ -652,11 +748,17 @@ r &lt;- COX_analysis(d, type = "OS", cont_Variates = c("FOXM1", "age"),
                    cate_Variates = c("grade", "N"), method = "uni")
 head(r$results_table)
 
-## Joint model, with every covariate removal recorded and explained.
+## Joint model. With the fail-safe default a model that would need a
+## covariate dropped is reported as not estimable, with its reasons.
 r2 &lt;- COX_analysis(d, type = "OS", cont_Variates = c("FOXM1", "age"),
                     cate_Variates = c("grade", "N"), method = "multi")
-r2$metadata$dropped_covariates
-r2$metadata$reduced</code></pre>
+r2$metadata$reduced
+
+## auto_repair = TRUE restores the old behaviour and records every change.
+r3 &lt;- COX_analysis(d, type = "OS", cont_Variates = c("FOXM1", "age"),
+                    cate_Variates = c("grade", "N"), method = "multi",
+                    auto_repair = TRUE)
+r3$metadata$dropped_covariates</code></pre>
                 </div>
                 
                 <div class="function-box" id="func-quick_km">
@@ -725,17 +827,23 @@ s2$metadata$genes_missing</code></pre>
                 <div class="function-box" id="func-cpas_meta">
                     <div class="function-name">4.10 cpas_meta</div>
                     <h4>Description</h4>
-                    <p>Two-stage cross-cohort meta-analysis on cohorts of the same cancer type: stage 1 fits <code>coxph(Surv(time, status) ~ marker)</code> in every cohort to obtain logHR and SE; stage 2 pools them by inverse-variance weighting (fixed effect, or random effects with DerSimonian-Laird) and reports the pooled HR (95% CI), Z/p and the heterogeneity statistics Q/df/I&sup2;/tau&sup2;.</p>
+                    <p>Two-stage cross-cohort meta-analysis on cohorts of the same cancer type: stage 1 fits <code>coxph(Surv(time, status) ~ marker + confounders)</code> in every cohort to obtain logHR and SE; stage 2 pools them by inverse-variance weighting and reports the pooled HR (95% CI), Z/p, the heterogeneity statistics Q/df/I&sup2;/tau&sup2; and a 95% prediction interval for a new cohort. tau&sup2; is estimated by <strong>REML</strong> by default; DerSimonian-Laird, Hartung-Knapp-Sidik-Jonkman and fixed-effect pooling are available, and the alternative prediction interval is always returned beside the one used. A warning names any cohort whose token differs from the family's canonical definition.</p>
                     <h4>Usage</h4>
                     <pre><code>cpas_meta(
   datasets,
   marker,
   type = "OS",
-  method = c("RE", "FE"),
+  method = c("REML", "DL", "HK", "FE"),
+  pi_method = c("t", "normal", "HK"),
   confounders = NULL,
   min_events = 5,
   max_try = 3,
-  merged = NULL
+  merged = NULL,
+  pooling = c("family", "exact"),
+  overlap = c("warn", "refuse", "dedupe"),
+  auto_repair = FALSE,
+  class_table = NULL,
+  overlap_table = NULL
 )</code></pre>
                     <h4>Arguments</h4>
                     <table>
@@ -743,18 +851,29 @@ s2$metadata$genes_missing</code></pre>
                         <tr><td>datasets</td><td>Character vector of dataset accessions (matching <code>dataset_info</code>$Accession).</td></tr>
                         <tr><td>marker</td><td>A single gene symbol (e.g. "FOXM1") or a signature formula string (e.g. "0.5*FOXM1+0.3*TP53").</td></tr>
                         <tr><td>type</td><td>Endpoint family (OS/DSS/DFS/PFS/MFS) or raw endpoint token (OS/DSS/DFS/RFS/PFS/MFS/DFI/PFI/DRFS/EFS ...). The family is resolved to the concrete token per cohort (see <code>endpoint_resolve()</code>) and recorded in per_dataset$endpoint.</td></tr>
-                        <tr><td>method</td><td>"RE" (random effects, default) or "FE" (fixed effect).</td></tr>
+                        <tr><td>method</td><td><code>"REML"</code> (default, iterative restricted maximum likelihood for tau&sup2;), <code>"DL"</code> (DerSimonian-Laird, the previous default, kept for continuity), <code>"HK"</code> (Hartung-Knapp-Sidik-Jonkman adjusted variance of the pooled estimate, with its characteristically wider interval) or <code>"FE"</code> (fixed effect). <code>"RE"</code> is still accepted as a synonym of <code>"DL"</code>.</td></tr>
+                        <tr><td>pi_method</td><td>Construction rule of the 95% prediction interval for a new cohort: <code>"t"</code> (default, the documented t(k-2) interval on the pooled SE and tau&sup2;; needs at least 3 cohorts), <code>"normal"</code> (the normal approximation; needs at least 2) or <code>"HK"</code> (on the HK-adjusted standard error with t(k-1)). The rule used is recorded in <code>$pooled$pi_method</code> and the other construction is returned beside it in <code>$pooled$pi_alt_lower</code>/<code>pi_alt_upper</code>. Only the interval changes: the pooled HR, its confidence interval and the heterogeneity statistics are identical whatever <code>pi_method</code> is.</td></tr>
                         <tr><td>confounders</td><td>Optional character vector of multivariable-adjustment covariate names (must exist in the merged data; the per-cohort intersection of available covariates is used).</td></tr>
                         <tr><td>min_events</td><td>Minimum number of events for a cohort to be included (default 5).</td></tr>
                         <tr><td>max_try</td><td>Number of retries when data retrieval fails for a cohort (to absorb API jitter).</td></tr>
                         <tr><td>merged</td><td>Optional named list (cohort name -&gt; already merged data.frame). When supplied, no network retrieval is performed.</td></tr>
+                        <tr><td>pooling</td><td><code>"family"</code> (default) pools the Exact-equivalent and the Clinically-related cells of the family, which is what makes a cross-token DFS pool possible; <code>"exact"</code> is the strict mode that pools only cells whose class is Exact-equivalent. The mode used and the classes actually pooled are recorded in <code>$pooled$pooling</code>, <code>$per_dataset$pooling_class</code> and <code>$manifest</code>.</td></tr>
+                        <tr><td>overlap</td><td>What to do when cohorts in the request are known to share patients: <code>"warn"</code> (default) proceeds but warns and records the pairs in <code>$pooled$overlap_pairs</code>, <code>"refuse"</code> stops with an actionable error, <code>"dedupe"</code> keeps one member of each overlapping group (the larger cohort, ties by accession sort) and records what it dropped in <code>$excluded</code> and <code>$manifest$overlap_dropped</code>.</td></tr>
+                        <tr><td>auto_repair</td><td>Logical, default FALSE (the fail-safe). A cohort whose model would need covariates dropped, levels merged or rows excluded is reported as <em>not estimable</em> with its reasons and offending terms in <code>$excluded</code>, and no model is returned for it. TRUE restores the previous repairing behaviour and records every modification in <code>$modifications</code>.</td></tr>
+                        <tr><td>class_table</td><td>Optional endpoint-semantics table (the frozen schema of <code>endpoint_semantics()</code>) used instead of the shipped copy.</td></tr>
+                        <tr><td>overlap_table</td><td>Optional shared-patient register (the frozen schema of <code>cohort_overlap()</code>) used instead of the shipped copy.</td></tr>
                     </table>
                     <h4>Examples</h4>
                     <pre><code>## Two lung-cancer cohorts, one OS analysis.
 m &lt;- cpas_meta(c("TCGA-LUAD", "GSE31210"), marker = "FOXM1", type = "OS")
-m$per_dataset[, c("dataset", "endpoint", "n", "events", "HR")]
-m$pooled              # pooled HR (95% CI), Z/p, Q/df/I2/tau2
+m$per_dataset[, c("dataset", "endpoint", "pooling_class", "n", "events", "HR")]
+m$pooled              # pooled HR (95% CI), Z/p, Q/df/I2/tau2, prediction interval
 
+## Strict mode: only cells whose class is Exact-equivalent.
+m2 &lt;- cpas_meta(c("TCGA-LUAD", "GSE31210"), marker = "FOXM1", type = "OS",
+                pooling = "exact", overlap = "warn")
+
+cpas_manifest(m)      # what was pooled, what was dropped, and why
 loo_meta(m)           # leave-one-out sensitivity
 print(m)</code></pre>
                 </div>
@@ -879,6 +998,244 @@ run_cpas_app()                 # free port, opens the browser
 run_cpas_app(port = 3838)      # fixed port</code></pre>
                 </div>
                 
+                <div class="function-box" id="func-endpoint_semantics">
+                    <div class="function-name">4.15 endpoint_semantics</div>
+                    <h4>Description</h4>
+                    <p>Returns the companion table that records, for every cohort and pooling family, what the endpoint actually measures and which pooling class it belongs to. It has one row per cohort-by-family cell - 985 cells in the released catalog, of which 347 carry a resolved token - with the frozen columns <code>Accession</code>, <code>Type</code>, <code>Family</code>, <code>Token</code>, <code>TokenRole</code>, <code>SourceField</code>, <code>EventDefinition</code>, <code>TimeOrigin</code>, <code>CensoringRule</code>, <code>CompetingEvents</code>, <code>Derived</code>, <code>PoolingClass</code>, <code>Evidence</code> and <code>Note</code>. The table ships with the package (<code>inst/extdata/endpoint_semantics.csv</code>) and is the table <code>cpas_meta()</code> consults to decide what <code>pooling = "exact"</code> keeps.</p>
+                    <h4>Usage</h4>
+                    <pre><code>endpoint_semantics(accession = NULL, family = NULL, path = NULL)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>accession</td><td>Optional accession filter (e.g. "GSE31210").</td></tr>
+                        <tr><td>family</td><td>Optional pooling-family filter (OS, DSS, DFS, PFS, MFS).</td></tr>
+                        <tr><td>path</td><td>Optional path of the companion CSV; defaults to the copy shipped with the package.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## One row per cohort x endpoint family, with the pooling class.
+es &lt;- endpoint_semantics(family = "DFS")
+table(es$PoolingClass)
+
+## The semantic record of one cell.
+es[es$Accession == "GSE31210",
+   c("Token", "TokenRole", "EventDefinition", "TimeOrigin",
+     "CensoringRule", "Evidence")]</code></pre>
+                </div>
+
+                <div class="function-box" id="func-endpoint_pooling_class">
+                    <div class="function-name">4.16 endpoint_pooling_class</div>
+                    <h4>Description</h4>
+                    <p>One-cell accessor for the pooling class of a cohort and endpoint family. It returns exactly the value <code>cpas_meta(pooling = "exact")</code> filters on: <code>"Exact-equivalent"</code> when the token <em>is</em> the family's canonical definition (OS in OS, DFS in DFS, ...); <code>"Clinically-related"</code> when a different token is pooled into the family by the documented token-to-family map (RFS/EFS/DFI in DFS, CSS/BCSS in DSS, PFI in PFS, DRFS in MFS); <code>"Not-poolable"</code> when the cohort reports an endpoint in this family that cannot be pooled; <code>"Unknown"</code> when the deposit does not state what the endpoint means; and <code>"Absent"</code> when the cohort has no endpoint of this family at all - the absence of an endpoint, not a pooling verdict, so such a cell is never a pooling candidate.</p>
+                    <h4>Usage</h4>
+                    <pre><code>endpoint_pooling_class(accession, family, class_table = NULL)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>accession</td><td>Cohort accession (e.g. "GSE31210").</td></tr>
+                        <tr><td>family</td><td>Pooling family (OS, DSS, DFS, PFS, MFS) or a raw endpoint token.</td></tr>
+                        <tr><td>class_table</td><td>Optional companion table to use instead of the shipped one.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## The token decides whether the cell is the canonical definition of the
+## family or a related one pooled into it by design.
+endpoint_pooling_class("GSE31210", "DFS")       # "Clinically-related" (RFS)
+endpoint_pooling_class("GSE4922_GPL96", "DFS")  # "Exact-equivalent"
+endpoint_pooling_class("GSE13507", "MFS")       # "Absent"</code></pre>
+                </div>
+
+                <div class="function-box" id="func-cpas_manifest">
+                    <div class="function-name">4.17 cpas_manifest</div>
+                    <h4>Description</h4>
+                    <p>Returns the analysis manifest of a result: the cohorts, the endpoint family and the token each cohort actually contributed, the pooling classes that were pooled, how the cohorts were selected, which rows and covariates were dropped and why, the cut-point rule and how many cut-points were searched, the search-adjusted p-value when one was computed, the proportional-hazards (<code>cox.zph</code>) result, the meta-analysis method, tau&sup2;, I&sup2;, the prediction interval(s), the R and package versions and the timestamp. Every analysis result carries the same object as its <code>$manifest</code> element, so <code>cpas_manifest(result)</code> reads it while <code>cpas_manifest()</code> returns the empty skeleton with the same field list. It prints as a readable block and converts with <code>as.data.frame()</code> into a two-column <code>field</code>/<code>value</code> table; the structured pieces (per-cohort pooling classes, dropped rows and covariates, overlapping pairs) are data.frames inside the manifest itself.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cpas_manifest(x = NULL, ...)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>x</td><td>A result object returned by an analysis function (<code>cpas_meta()</code>, <code>COX_analysis()</code>, <code>COX_screen_adjust()</code>, <code>cpas_km_pooled()</code>, ...). When omitted, an empty manifest skeleton with the same field list is returned.</td></tr>
+                        <tr><td>...</td><td>Unused; accepted so that <code>cpas_manifest(result)</code> and <code>cpas_manifest()</code> take the same shape as the other accessors.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>m &lt;- cpas_meta(c("TCGA-LUAD", "GSE31210"), marker = "FOXM1", type = "OS")
+
+cpas_manifest(m)                  # readable block
+as.data.frame(cpas_manifest(m))   # field / value table
+cpas_manifest(m)$pooling_classes  # what was actually pooled</code></pre>
+                </div>
+
+                <div class="function-box" id="func-cohort_overlap">
+                    <div class="function-name">4.18 cohort_overlap</div>
+                    <h4>Description</h4>
+                    <p>Returns the register of cohort pairs that are known to share patients, with the frozen columns <code>AccessionA</code>, <code>AccessionB</code>, <code>SharedPatients</code>, <code>Basis</code> and <code>Evidence</code> (30 pairs in the released catalog). The table ships with the package (<code>inst/extdata/cohort_overlap.csv</code>) and <code>cpas_meta()</code> consults it through its <code>overlap</code> argument, so an overlap-aware analysis can warn, refuse or deduplicate instead of silently treating related cohorts as independent.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cohort_overlap(path = NULL)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>path</td><td>Optional path of the register CSV; defaults to the copy shipped with the package.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>ov &lt;- cohort_overlap()
+head(ov)
+
+## Which of my cohorts overlap at all?
+ov[ov$AccessionA %in% c("GSE11969", "GSE13213") |
+   ov$AccessionB %in% c("GSE11969", "GSE13213"), ]</code></pre>
+                </div>
+
+                <div class="function-box" id="func-batch_diagnostics">
+                    <div class="function-name">4.19 batch_diagnostics</div>
+                    <h4>Description</h4>
+                    <p>Summarises the expression distribution of one gene (or a gene vector) in each cohort, together with the cut-point values the pooled analyses use, so a batch effect can be inspected before anything is pooled. Multi-cohort pooling rests on two facts this function makes checkable: <code>cpas_meta()</code> is a two-stage meta-analysis whose stage 1 standardises the marker <em>inside</em> each cohort, so a cohort-wide additive shift of the expression scale cancels and does not enter the pooled estimate; and the pooled Kaplan-Meier of <code>cpas_km_pooled()</code> splits each cohort at its <em>own</em> percentile, so no absolute cross-platform threshold is used. The returned <code>$table</code> carries n, missing count, median, quartiles, IQR, min/max, mean, sd, both cut-points and the High/Low counts per cohort and gene; <code>$batch</code> gives the cross-cohort spread including the shift after within-cohort standardisation; <code>$values</code> holds the long per-sample values the plot is built from.</p>
+                    <h4>Usage</h4>
+                    <pre><code>batch_diagnostics(
+  datasets,
+  genes,
+  type = "OS",
+  top_pct = 25,
+  merged = NULL,
+  process_duplicates = "max",
+  max_try = 3
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>datasets</td><td>Character vector of dataset accessions or TCGA projects.</td></tr>
+                        <tr><td>genes</td><td>One or more gene symbols.</td></tr>
+                        <tr><td>type</td><td>Endpoint family (OS/DSS/DFS/PFS/MFS) or a concrete token. It only selects which survival columns are joined and which token is reported; the expression summaries are independent of it.</td></tr>
+                        <tr><td>top_pct</td><td>Percentile used by the <code>cut = "top_pct"</code> rule of <code>cpas_km_pooled()</code>: the cut-point reported is the cohort's (100 - top_pct)th percentile, so <code>top_pct = 25</code> means the top 25% of the cohort is "High" (default 25).</td></tr>
+                        <tr><td>merged</td><td>Optional named list (cohort -&gt; merged data.frame) that skips all retrieval; useful offline and in tests.</td></tr>
+                        <tr><td>process_duplicates</td><td>Probe collapsing rule passed to <code>get_expr_data()</code> (default "max").</td></tr>
+                        <tr><td>max_try</td><td>Retrieval attempts per cohort.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## Two real lung cohorts; the second run reads the local cache offline.
+b &lt;- batch_diagnostics(c("GSE31210", "GSE37745"), genes = "GAPDH",
+                       type = "DFS", top_pct = 25)
+
+b$table[, c("dataset", "gene", "n", "median", "cut_median", "cut_top_pct")]
+b$batch                      # how far apart the absolute scales are
+plot_batch_diagnostics(b)    # the distributions side by side</code></pre>
+                </div>
+
+                <div class="function-box" id="func-plot_batch_diagnostics">
+                    <div class="function-name">4.20 plot_batch_diagnostics</div>
+                    <h4>Description</h4>
+                    <p>Draws the per-cohort expression distribution of every gene in a <code>batch_diagnostics()</code> result as side-by-side box plots on one shared axis, with the within-cohort median-split and percentile cut-points marked, so the cross-platform shift and the cut-points that absorb it are visible in the same panel. Returns a <code>ggplot</code> object.</p>
+                    <h4>Usage</h4>
+                    <pre><code>plot_batch_diagnostics(
+  x,
+  genes = NULL,
+  show_cut_points = TRUE,
+  free_y = FALSE,
+  ...
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>x</td><td>An object returned by <code>batch_diagnostics()</code>.</td></tr>
+                        <tr><td>genes</td><td>Optional subset of genes to draw (default: all).</td></tr>
+                        <tr><td>show_cut_points</td><td>Draw the per-cohort median (solid segment) and percentile (dashed segment) cut-points (default TRUE).</td></tr>
+                        <tr><td>free_y</td><td>Let each gene panel keep its own y scale (default FALSE: one shared axis, which is what shows the cross-cohort differences).</td></tr>
+                        <tr><td>...</td><td>Reserved, currently unused.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>b &lt;- batch_diagnostics(c("GSE31210", "GSE37745"), genes = "GAPDH", type = "DFS")
+plot_batch_diagnostics(b)
+plot_batch_diagnostics(b, show_cut_points = TRUE, free_y = FALSE)</code></pre>
+                </div>
+
+                <div class="function-box" id="func-cpas_reproducibility_index">
+                    <div class="function-name">4.21 cpas_reproducibility_index</div>
+                    <h4>Description</h4>
+                    <p>A tidy data frame indexing the material behind the reported numbers: the 67 curation steps of the shipped pipeline (with the consolidated <code>inst/pipeline/</code> file that provides each one), the exclusion register, the repair and defect records, the frozen-state record and the additional-file layout. It is an index, not a data dump: it carries counts and locations, never the registers' rows, and it never reads the catalog or the mirror. The index is assembled from two small CSVs shipped with the package (<code>inst/reproducibility/curation_steps.csv</code> and <code>inst/reproducibility/materials.csv</code>) and resolved with <code>system.file()</code>, so it works offline from an installed package. Columns include <code>section</code>, <code>number</code>, <code>item</code>, <code>script</code>, <code>what_it_does</code>, <code>consolidated_file</code>, <code>records</code>, <code>location</code>, <code>package_path</code>, <code>installed_path</code>, <code>available</code> and <code>resolved_source</code>.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cpas_reproducibility_index(package = "CanPAS", root = NULL)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>package</td><td>Package to resolve the shipped files in (default "CanPAS"); mainly useful for tests.</td></tr>
+                        <tr><td>root</td><td>Optional project root used to resolve the external material (default <code>CPAS_DATA_ROOT</code>, else the documented project path).</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>idx &lt;- cpas_reproducibility_index()
+table(idx$section)
+subset(idx, section == "register", select = c("item", "records", "location"))
+subset(idx, section == "curation_step")[1:3, c("number", "script", "consolidated_file")]</code></pre>
+                </div>
+
+                <div class="function-box" id="func-cpas_pipeline_steps">
+                    <div class="function-name">4.22 cpas_pipeline_steps</div>
+                    <h4>Description</h4>
+                    <p>Returns the step inventory of the curation pipeline that built the CanPAS mirror and catalog: one row per step (67 rows) with its canonical run order, the step id used by <code>run_pipeline.R</code>, its original script name, what the step does, whether it is a numbered construction/repair step or a helper/demo/validation script, and which consolidated file under <code>inst/pipeline/</code> provides it. The inventory is a small CSV shipped with the package (<code>inst/reproducibility/curation_steps.csv</code>) and each consolidated file is resolved with <code>system.file()</code>, so the result is usable from an installed package. When <code>run_pipeline.R</code> is present every row is also cross-checked against its step table, so drift between the inventory and the entry point is visible rather than silent.</p>
+                    <h4>Usage</h4>
+                    <pre><code>cpas_pipeline_steps(package = "CanPAS")</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>package</td><td>Package to resolve the shipped files in (default "CanPAS"); mainly useful for tests.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>steps &lt;- cpas_pipeline_steps()
+nrow(steps)                # 67
+table(steps$kind)
+head(steps[, c("number", "script", "consolidated_file")])</code></pre>
+                </div>
+
+                <div class="function-box" id="func-endpoint_adjudication">
+                    <div class="function-name">4.23 endpoint_adjudication</div>
+                    <h4>Description</h4>
+                    <p>Draws a stratified sample of cohort-endpoint records from the shipped endpoint-semantics table and returns a blinded rating sheet: one row per record with a stable <code>record_id</code>, the cohort, the endpoint <em>token</em> and the <em>evidence text</em> only, plus one empty column per judgement field and rater. The sheet deliberately withholds the recorded family assignment, the pooling class and the four semantic fields (event definition, time origin, censoring rule, competing events), so a rater judges the endpoint from the token and the evidence text alone and cannot anchor on the annotation under review. Records are stratified by endpoint family and by source (accession prefix: GEO, TCGA, EMBL-EBI, CGGA, other) with largest-remainder allocation, and <code>record_id</code> is assigned across the whole table in catalog order before sampling, so a record keeps its id across sheets.</p>
+                    <h4>Usage</h4>
+                    <pre><code>endpoint_adjudication(
+  n = 80,
+  raters = 2,
+  seed = 20260101,
+  families = NULL,
+  drop_absent = FALSE,
+  path = NULL,
+  table = NULL
+)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>n</td><td>Number of records to draw (default 80; capped at the number of eligible records).</td></tr>
+                        <tr><td>raters</td><td>Number of raters the sheet is prepared for (default 2). Any number &gt;= 1 is accepted; the agreement calculator reports pairwise mean kappa when more than two raters filled it.</td></tr>
+                        <tr><td>seed</td><td>Fixed random seed (default 20260101) making the draw reproducible; the previous RNG state is restored on exit.</td></tr>
+                        <tr><td>families</td><td>Optional character vector of endpoint families to sample from (default: all five).</td></tr>
+                        <tr><td>drop_absent</td><td>Drop records whose token is absent for the family (default FALSE; TRUE samples only records that report an endpoint).</td></tr>
+                        <tr><td>path</td><td>Optional file path. When supplied the sheet is also written there as CSV with empty cells for the blank ratings.</td></tr>
+                        <tr><td>table</td><td>Optional endpoint-semantics table (the frozen schema of <code>endpoint_semantics()</code>) used instead of the shipped copy.</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>## Offline: the shipped endpoint-semantics table, no network.
+sheet &lt;- endpoint_adjudication(n = 6, raters = 2, seed = 42)
+sheet[, c("record_id", "cohort", "token")]
+attr(sheet, "pooling_class_vocabulary")</code></pre>
+                </div>
+
+                <div class="function-box" id="func-endpoint_agreement">
+                    <div class="function-name">4.24 endpoint_agreement</div>
+                    <h4>Description</h4>
+                    <p>Takes a filled rating sheet from <code>endpoint_adjudication()</code> and reports how far the raters agree: per-field raw agreement, <strong>Cohen's kappa</strong> per field with its Landis-and-Koch interpretation, the overall pooled agreement, the adjudication rate and the records whose raters disagreed. Kappa is computed from the nominal contingency table of the two raters, using only rater pairs in which both ratings are present and non-empty, so missing ratings reduce the compared count instead of biasing the estimate; a field in which every rating is the same single category reports <code>kappa = NA</code> rather than NaN. With more than two raters every pair is scored and the field's kappa is the mean of the pairwise Cohen's kappas, which is stated in <code>kappa_basis</code>. This is tooling for running an endpoint-adjudication exercise; running it is not itself a validation study (see <a href="#verification">section 7</a>).</p>
+                    <h4>Usage</h4>
+                    <pre><code>endpoint_agreement(sheet, fields = .cpas_adjudication_fields)</code></pre>
+                    <h4>Arguments</h4>
+                    <table>
+                        <tr><th>Argument</th><th>Description</th></tr>
+                        <tr><td>sheet</td><td>A filled rating sheet: the columns of <code>endpoint_adjudication()</code> plus at least two <code>rater&lt;r&gt;_&lt;field&gt;</code> columns per judgement field with at least one non-empty pair.</td></tr>
+                        <tr><td>fields</td><td>Judgement fields to score (default: the five the sheet prepares - event_definition, time_origin, censoring_rule, competing_events, pooling_class).</td></tr>
+                    </table>
+                    <h4>Examples</h4>
+                    <pre><code>sheet &lt;- endpoint_adjudication(n = 6, raters = 2, seed = 42)
+sheet$rater1_pooling_class &lt;- rep("Exact-equivalent", nrow(sheet))
+sheet$rater2_pooling_class &lt;- sheet$rater1_pooling_class
+
+ag &lt;- endpoint_agreement(sheet, fields = "pooling_class")
+ag$per_field[, c("field", "n_compared", "raw_agreement", "kappa",
+                 "kappa_interpretation")]</code></pre>
+                </div>
+
             </section>
             
             <section id="shiny-application">
@@ -905,12 +1262,13 @@ run_cpas_app(port = 3838)      # fixed port</code></pre>
                 <p>
                     CanPAS is built on a curated catalog of <strong>197 cohorts</strong> covering
                     <strong>29 cancer types</strong> and <strong>38,981 analysable samples</strong>, assembled from
-                    five source archives:
+                    five source buckets - GEO, EMBL-EBI ArrayExpress / BioStudies, TCGA, CGGA and
+                    cBioPortal-hosted studies:
                 </p>
                 <table>
                     <tr><th>Source archive</th><th>Cohorts</th></tr>
                     <tr><td>GEO</td><td>145</td></tr>
-                    <tr><td>EMBL-EBI</td><td>14</td></tr>
+                    <tr><td>EMBL-EBI (ArrayExpress / BioStudies)</td><td>14</td></tr>
                     <tr><td>TCGA</td><td>33</td></tr>
                     <tr><td>CGGA</td><td>3</td></tr>
                     <tr><td>cBioPortal-hosted</td><td>2</td></tr>
@@ -921,6 +1279,20 @@ run_cpas_app(port = 3838)      # fixed port</code></pre>
                     plus clinical covariates where available. TCGA cohorts are the exception on the expression
                     side: the mirror holds no TCGA expression table, so TCGA expression is fetched on demand from
                     UCSC Xena, with the clinical tables held locally.
+                </p>
+                <p>
+                    Each of the <strong>985</strong> cohort-by-family cells carries a semantic record - the token,
+                    its role, the event definition, the time origin, the censoring rule, competing events, the
+                    source field it was read from, whether it is derived, and the evidence text - together with a
+                    pooling class. <strong>347</strong> cells are resolved at token level
+                    (<code>endpoint_semantics()</code>); the other cells are families the cohort does not report
+                    (<code>Absent</code>, which is the absence of an endpoint and not a pooling verdict). The class
+                    splits those 347 into Exact-equivalent and Clinically-related cells, is readable per cell with
+                    <code>endpoint_pooling_class(accession, family)</code>, and is what
+                    <code>cpas_meta(pooling = "exact")</code> filters on.
+                    Groups of cohorts known to share patients are recorded in the shared-patient register (30 pairs
+                    in this release) and consulted by <code>cpas_meta()</code> through its <code>overlap</code>
+                    argument.
                 </p>
                 <p>
                     Non-TCGA cohorts are served from the public data API / mirror at
@@ -938,10 +1310,17 @@ run_cpas_app(port = 3838)      # fixed port</code></pre>
             <section id="verification">
                 <h2>7. Verification &amp; Reproducibility</h2>
                 <p>
-                    The catalog is produced by a scripted curation pipeline of 50+ numbered curation scripts, from
-                    series parsing through survival-table construction, clinical standardisation and
+                    The catalog is produced by a scripted curation pipeline of <strong>67 numbered steps</strong>,
+                    from series parsing through survival-table construction, clinical standardisation and
                     expression-scale harmonisation. Each step is numbered and rerunnable, so a cohort can be
-                    rebuilt from its source series rather than edited by hand.
+                    rebuilt from its source series rather than edited by hand. The pipeline now ships
+                    <em>inside the package</em> as nine consolidated script files under
+                    <code>inst/pipeline/</code> (01 ingest/parse through 09 analysis and figures) plus the
+                    <code>run_pipeline.R</code> entry point - scripts only, no data.
+                    <code>cpas_pipeline_steps()</code> lists every step with its original script name, what it
+                    does and which consolidated file provides it; <code>cpas_reproducibility_index()</code> indexes
+                    the material behind the reported numbers (the curation steps, the exclusion register, the
+                    repair and defect records, the frozen state and the additional-file layout).
                 </p>
                 <p>
                     A verification script cross-checks every catalogued cohort against the data mirror. At the
@@ -949,8 +1328,29 @@ run_cpas_app(port = 3838)      # fixed port</code></pre>
                     with every catalogued row fully usable.
                 </p>
                 <p>
+                    The released package itself installs and checks cleanly: <code>R CMD check</code> reports
+                    <strong>0 errors, 0 warnings and 1 note</strong> (a host library notice on the check machine).
+                    The test suite cross-checks the numerical results against independent reference
+                    implementations (<code>survival</code>, <code>metafor</code>, <code>cmprsk</code>).
+                </p>
+                <p>
                     A reproducibility bundle of the curation scripts and a frozen catalog accompany the release, so
-                    the delivered cohort tables can be regenerated and the reported counts re-derived.
+                    the delivered cohort tables can be regenerated and the reported counts re-derived. Every
+                    analysis result additionally carries an analysis manifest (<code>cpas_manifest()</code>)
+                    recording the cohorts, the resolved token of each, the pooling classes pooled, the selection
+                    rule, the rows and covariates dropped and why, the cut-point rule and the number of cut-points
+                    searched, the proportional-hazards test, the meta-analysis method, tau&sup2;, I&sup2;, the
+                    prediction intervals and the R and package versions, so a reported number can be traced back to
+                    the run that produced it.
+                </p>
+                <p>
+                    <code>endpoint_adjudication()</code> and <code>endpoint_agreement()</code> generate blinded
+                    rating sheets and compute per-field raw agreement, Cohen's kappa with its Landis-and-Koch
+                    interpretation, the adjudication rate and the disagreeing records. These are tools for running
+                    an endpoint-adjudication exercise: the agreement figures obtained so far come from ratings
+                    produced by AI agents by design, <strong>not</strong> from independent human experts, and no
+                    human expert validation study has been carried out. The package also has a public issue tracker
+                    at <a href="https://github.com/WangJin93/CanPAS/issues">github.com/WangJin93/CanPAS/issues</a>.
                 </p>
             </section>
         </main>
